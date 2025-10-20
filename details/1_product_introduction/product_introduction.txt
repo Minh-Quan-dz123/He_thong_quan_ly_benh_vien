@@ -1,0 +1,4 @@
+Hệ thống quản lý cho các bệnh viện
+1. Giúp quản lý thông tin bác sĩ, bệnh nhân 
+2. Giúp quản lý các lịch hẹn giữa bác sĩ bệnh nhân và thông báo tới họ
+3. Giúp kiểm soát số lượng bệnh nhân trong các khoa và đưa ra phương án nhập viện
