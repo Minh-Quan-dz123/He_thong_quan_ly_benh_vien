@@ -2,7 +2,7 @@ hospital-microservice/                 # Root project
 ├─ frontend/
 │  ├─ UI/                               # Presentation layer
 │  │  ├─ pages/
-│  │  │   ├─ PatientPage.jsx
+│  │  │   ├─ AdminPage.jsx
 │  │  │   ├─ DoctorPage.jsx
 │  │  │   └─ AppointmentPage.jsx
 │  │  ├─ components/
