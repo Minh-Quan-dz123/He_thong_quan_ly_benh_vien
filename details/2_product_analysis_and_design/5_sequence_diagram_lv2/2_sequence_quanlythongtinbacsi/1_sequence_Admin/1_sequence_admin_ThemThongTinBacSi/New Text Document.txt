@@ -1,0 +1,6 @@
+max-width: 1200px : Giới hạn độ rộng tối đa của khối nội dung.
+- margin: 0 auto : Căn lề tự động giúp khối nằm giữa trang.
+- background: white : Tô nền trắng.
+- border-radius: 12px : Bo tròn góc, tạo cảm giác mềm mại.
+- padding: 30px : Tạo khoảng cách giữa nội dung và viền.
+- box-shadow: Thêm bóng nhẹ giúp nội dung nổi bật.
