@@ -7,36 +7,36 @@ const MedicalRecords = () => {
       id: 1,
       date: '2023-10-15',
       doctor: 'Dr. Sarah Wilson',
-      specialty: 'Cardiology',
-      diagnosis: 'Mild Hypertension',
+      specialty: 'Tim mạch',
+      diagnosis: 'Tăng huyết áp nhẹ',
       prescription: 'Lisinopril 10mg',
-      notes: 'Patient advised to reduce salt intake and exercise regularly.'
+      notes: 'Bệnh nhân được khuyên giảm lượng muối và tập thể dục thường xuyên.'
     },
     {
       id: 2,
       date: '2023-08-20',
       doctor: 'Dr. Emily Parker',
-      specialty: 'General Practice',
-      diagnosis: 'Seasonal Flu',
-      prescription: 'Ibuprofen, Rest, Fluids',
-      notes: 'Follow up in 3 days if symptoms persist.'
+      specialty: 'Đa khoa',
+      diagnosis: 'Cúm mùa',
+      prescription: 'Ibuprofen, Nghỉ ngơi, Uống nhiều nước',
+      notes: 'Tái khám sau 3 ngày nếu triệu chứng kéo dài.'
     },
     {
       id: 3,
       date: '2023-05-10',
       doctor: 'Dr. James Chen',
-      specialty: 'Neurology',
-      diagnosis: 'Migraine',
+      specialty: 'Thần kinh',
+      diagnosis: 'Đau nửa đầu',
       prescription: 'Sumatriptan 50mg',
-      notes: 'Trigger identification diary recommended.'
+      notes: 'Khuyên dùng nhật ký xác định nguyên nhân.'
     }
   ];
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="mb-8">
-        <h2 className="text-3xl font-bold text-gray-900">Medical Records</h2>
-        <p className="mt-2 text-gray-600">History of your visits, diagnoses, and prescriptions.</p>
+        <h2 className="text-3xl font-bold text-gray-900">Hồ sơ bệnh án</h2>
+        <p className="mt-2 text-gray-600">Lịch sử khám bệnh, chẩn đoán và đơn thuốc của bạn.</p>
       </div>
 
       <div className="flex flex-col">
@@ -47,19 +47,19 @@ const MedicalRecords = () => {
                 <thead className="bg-gray-50">
                   <tr>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Date
+                      Ngày khám
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Doctor
+                      Bác sĩ
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Diagnosis
+                      Chẩn đoán
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Prescription
+                      Đơn thuốc
                     </th>
                     <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                      Notes
+                      Ghi chú
                     </th>
                   </tr>
                 </thead>

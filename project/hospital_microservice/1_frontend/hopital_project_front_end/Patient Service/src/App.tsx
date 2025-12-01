@@ -8,13 +8,19 @@ import UserProfile from './components/UserProfile';
 import MedicalRecords from './components/MedicalRecords';
 import Appointment from './components/Appointment';
 import DoctorPatients from './components/DoctorPatients';
+import News from './components/News';
+import QuickAccess from './components/QuickAccess';
+import Specialties from './components/Specialties';
+import PatientGuide from './components/PatientGuide';
 
 function App() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
   const [userRole, setUserRole] = useState<'patient' | 'doctor' | null>(null);
-  const [currentView, setCurrentView] = useState<'home' | 'profile' | 'records' | 'appointment' | 'patients'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'profile' | 'records' | 'appointment' | 'patients' | 'news' | 'specialties' | 'guide'>('home');
+  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<string | undefined>(undefined);
+  const [guideSection, setGuideSection] = useState<'process' | 'insurance' | 'payment'>('process');
 
   const handleLogin = (user: string, role: 'patient' | 'doctor') => {
     setIsLoggedIn(true);
@@ -43,6 +49,20 @@ function App() {
     }
   };
 
+  const handleNewsClick = () => {
+    setCurrentView('news');
+  };
+
+  const handleSpecialtyClick = (id: string) => {
+    setSelectedSpecialtyId(id);
+    setCurrentView('specialties');
+  };
+
+  const handleGuideClick = (section: 'process' | 'insurance' | 'payment') => {
+    setGuideSection(section);
+    setCurrentView('guide');
+  };
+
   const renderContent = () => {
     switch (currentView) {
       case 'profile':
@@ -53,10 +73,17 @@ function App() {
         return <Appointment />;
       case 'patients':
         return <DoctorPatients />;
+      case 'news':
+        return <News />;
+      case 'specialties':
+        return <Specialties initialSpecialtyId={selectedSpecialtyId} key={selectedSpecialtyId} />;
+      case 'guide':
+        return <PatientGuide section={guideSection} />;
       default:
         return (
           <>
             <Hero />
+            <QuickAccess />
             <Doctors />
             <Contact />
           </>
@@ -75,8 +102,11 @@ function App() {
         onProfileClick={() => setCurrentView('profile')}
         onMedicalRecordsClick={() => setCurrentView('records')}
         onHomeClick={() => setCurrentView('home')}
+        onNewsClick={handleNewsClick}
         onAppointmentClick={handleAppointmentClick}
         onPatientsClick={handlePatientsClick}
+        onSpecialtyClick={handleSpecialtyClick}
+        onGuideClick={handleGuideClick}
       />
       {renderContent()}
       <SignIn 

@@ -11,9 +11,9 @@ const Appointment = () => {
   const [submitted, setSubmitted] = useState(false);
 
   const doctors = [
-    'Dr. Sarah Wilson - Cardiologist',
-    'Dr. James Chen - Neurologist',
-    'Dr. Emily Parker - Pediatrician'
+    'Dr. Sarah Wilson - Tim mạch',
+    'Dr. James Chen - Thần kinh',
+    'Dr. Emily Parker - Nhi khoa'
   ];
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -37,15 +37,15 @@ const Appointment = () => {
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
             </svg>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Appointment Booked!</h2>
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">Đã đặt lịch hẹn!</h2>
           <p className="text-gray-600">
-            Thank you for booking an appointment. We have sent a confirmation to your email.
+            Cảm ơn bạn đã đặt lịch hẹn. Chúng tôi đã gửi xác nhận đến email của bạn.
           </p>
           <button
             onClick={() => setSubmitted(false)}
             className="mt-6 text-blue-600 hover:text-blue-500 font-medium"
           >
-            Book another appointment
+            Đặt lịch hẹn khác
           </button>
         </div>
       </div>
@@ -56,14 +56,14 @@ const Appointment = () => {
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="bg-white shadow-xl rounded-2xl overflow-hidden">
         <div className="bg-blue-600 px-6 py-8 text-center">
-          <h2 className="text-3xl font-bold text-white">Make an Appointment</h2>
-          <p className="mt-2 text-blue-100">Schedule a visit with our specialists</p>
+          <h2 className="text-3xl font-bold text-white">Đặt lịch hẹn</h2>
+          <p className="mt-2 text-blue-100">Lên lịch khám với các chuyên gia của chúng tôi</p>
         </div>
         
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Select Doctor</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Chọn bác sĩ</label>
               <select
                 name="doctor"
                 required
@@ -71,7 +71,7 @@ const Appointment = () => {
                 onChange={handleChange}
                 className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 border p-3"
               >
-                <option value="">Choose a doctor...</option>
+                <option value="">Chọn một bác sĩ...</option>
                 {doctors.map((doc, index) => (
                   <option key={index} value={doc}>{doc}</option>
                 ))}
@@ -79,7 +79,7 @@ const Appointment = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Date</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Ngày</label>
               <input
                 type="date"
                 name="date"
@@ -91,7 +91,7 @@ const Appointment = () => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Time</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Giờ</label>
               <input
                 type="time"
                 name="time"
@@ -103,12 +103,12 @@ const Appointment = () => {
             </div>
 
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Số điện thoại</label>
               <input
                 type="tel"
                 name="phone"
                 required
-                placeholder="+1 (555) 000-0000"
+                placeholder="+84 123 456 789"
                 value={formData.phone}
                 onChange={handleChange}
                 className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 border p-3"
@@ -116,12 +116,12 @@ const Appointment = () => {
             </div>
 
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Reason for Visit</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Lý do khám</label>
               <textarea
                 name="reason"
                 rows={4}
                 required
-                placeholder="Please describe your symptoms or reason for visit..."
+                placeholder="Vui lòng mô tả triệu chứng hoặc lý do khám..."
                 value={formData.reason}
                 onChange={handleChange}
                 className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 border p-3"
@@ -134,7 +134,7 @@ const Appointment = () => {
               type="submit"
               className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors text-lg"
             >
-              Confirm Booking
+              Xác nhận đặt lịch
             </button>
           </div>
         </form>

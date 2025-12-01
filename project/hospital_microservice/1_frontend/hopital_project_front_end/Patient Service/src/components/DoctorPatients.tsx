@@ -5,11 +5,11 @@ const DoctorPatients = () => {
   const [filterType, setFilterType] = useState<'id' | 'name'>('id');
 
   const patients = [
-    { id: 1, name: 'Nguyen Van A', age: 30, lastVisit: '2023-10-01', condition: 'Flu' },
-    { id: 2, name: 'Tran Thi B', age: 25, lastVisit: '2023-10-05', condition: 'Headache' },
-    { id: 3, name: 'Le Van C', age: 45, lastVisit: '2023-09-20', condition: 'Hypertension' },
-    { id: 4, name: 'Pham Thi D', age: 28, lastVisit: '2023-10-10', condition: 'Allergy' },
-    { id: 5, name: 'Hoang Van E', age: 50, lastVisit: '2023-09-15', condition: 'Diabetes' },
+    { id: 1, name: 'Nguyen Van A', age: 30, lastVisit: '2023-10-01', condition: 'Cúm' },
+    { id: 2, name: 'Tran Thi B', age: 25, lastVisit: '2023-10-05', condition: 'Đau đầu' },
+    { id: 3, name: 'Le Van C', age: 45, lastVisit: '2023-09-20', condition: 'Tăng huyết áp' },
+    { id: 4, name: 'Pham Thi D', age: 28, lastVisit: '2023-10-10', condition: 'Dị ứng' },
+    { id: 5, name: 'Hoang Van E', age: 50, lastVisit: '2023-09-15', condition: 'Tiểu đường' },
   ];
 
   const filteredPatients = patients.filter(patient => {
@@ -23,20 +23,20 @@ const DoctorPatients = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Patient List</h2>
+        <h2 className="text-2xl font-bold text-gray-900">Danh sách bệnh nhân</h2>
         <div className="flex space-x-4">
             <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value as 'id' | 'name')}
                 className="border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500 bg-white"
             >
-                <option value="id">Filter by ID</option>
-                <option value="name">Filter by Name</option>
+                <option value="id">Lọc theo ID</option>
+                <option value="name">Lọc theo Tên</option>
             </select>
             <div className="relative">
                 <input 
                     type="text" 
-                    placeholder={`Search by ${filterType}...`}
+                    placeholder={`Tìm kiếm theo ${filterType === 'id' ? 'ID' : 'Tên'}...`}
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     className="border border-gray-300 rounded-md px-4 py-2 focus:ring-blue-500 focus:border-blue-500"
@@ -60,7 +60,7 @@ const DoctorPatients = () => {
                 <div className="mt-2 sm:flex sm:justify-between">
                   <div className="sm:flex">
                     <p className="flex items-center text-sm text-gray-500">
-                      Age: {patient.age}
+                      Tuổi: {patient.age}
                     </p>
                   </div>
                   <div className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0">
@@ -68,7 +68,7 @@ const DoctorPatients = () => {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
                     </svg>
                     <p>
-                      Last visit: {patient.lastVisit}
+                      Lần khám cuối: {patient.lastVisit}
                     </p>
                   </div>
                 </div>

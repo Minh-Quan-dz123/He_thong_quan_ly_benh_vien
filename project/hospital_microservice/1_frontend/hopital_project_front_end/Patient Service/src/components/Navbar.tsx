@@ -1,4 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
+import { specialtiesData } from './Specialties';
 
 interface NavbarProps {
   onSignInClick: () => void;
@@ -9,18 +10,31 @@ interface NavbarProps {
   onProfileClick: () => void;
   onMedicalRecordsClick: () => void;
   onHomeClick: () => void;
+  onNewsClick: () => void;
   onAppointmentClick: () => void;
   onPatientsClick: () => void;
+  onSpecialtyClick: (id: string) => void;
+  onGuideClick: (section: 'process' | 'insurance' | 'payment') => void;
 }
 
-const Navbar = ({ onSignInClick, isLoggedIn, username, role, onLogout, onProfileClick, onMedicalRecordsClick, onHomeClick, onAppointmentClick, onPatientsClick }: NavbarProps) => {
+const Navbar = ({ onSignInClick, isLoggedIn, username, role, onLogout, onProfileClick, onMedicalRecordsClick, onHomeClick, onNewsClick, onAppointmentClick, onPatientsClick, onSpecialtyClick, onGuideClick }: NavbarProps) => {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isSpecialtyDropdownOpen, setIsSpecialtyDropdownOpen] = useState(false);
+  const [isGuideDropdownOpen, setIsGuideDropdownOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const specialtyDropdownRef = useRef<HTMLDivElement>(null);
+  const guideDropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setIsDropdownOpen(false);
+      }
+      if (specialtyDropdownRef.current && !specialtyDropdownRef.current.contains(event.target as Node)) {
+        setIsSpecialtyDropdownOpen(false);
+      }
+      if (guideDropdownRef.current && !guideDropdownRef.current.contains(event.target as Node)) {
+        setIsGuideDropdownOpen(false);
       }
     };
 
@@ -40,23 +54,101 @@ const Navbar = ({ onSignInClick, isLoggedIn, username, role, onLogout, onProfile
             </a>
           </div>
           <div className="hidden md:flex items-center space-x-8">
-            <a href="#" onClick={(e) => { e.preventDefault(); onHomeClick(); }} className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Home</a>
-            <a href="#" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">About Us</a>
-            <a href="#doctors" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Doctors</a>
-            <a href="#contact" className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Contact</a>
+            <a href="#" onClick={(e) => { e.preventDefault(); onHomeClick(); }} className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Trang chủ</a>
+            
+            {/* Chuyên khoa Dropdown */}
+            <div className="relative" ref={specialtyDropdownRef}>
+              <button
+                onClick={() => setIsSpecialtyDropdownOpen(!isSpecialtyDropdownOpen)}
+                className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium flex items-center focus:outline-none"
+              >
+                Chuyên khoa
+                <svg className={`ml-1 w-4 h-4 transition-transform duration-200 ${isSpecialtyDropdownOpen ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {isSpecialtyDropdownOpen && (
+                <div className="absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100 py-2 transform origin-top-left transition-all duration-200 ease-out z-50">
+                  <div className="grid grid-cols-1 gap-1 p-2">
+                    {specialtiesData.map((specialty) => (
+                      <button
+                        key={specialty.id}
+                        onClick={() => {
+                          setIsSpecialtyDropdownOpen(false);
+                          onSpecialtyClick(specialty.id);
+                        }}
+                        className="text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors"
+                      >
+                        {specialty.name}
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Hướng dẫn bệnh nhân Dropdown */}
+            <div className="relative" ref={guideDropdownRef}>
+              <button
+                onClick={() => setIsGuideDropdownOpen(!isGuideDropdownOpen)}
+                className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium flex items-center focus:outline-none"
+              >
+                Hướng dẫn bệnh nhân
+                <svg className={`ml-1 w-4 h-4 transition-transform duration-200 ${isGuideDropdownOpen ? 'transform rotate-180' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </button>
+              
+              {isGuideDropdownOpen && (
+                <div className="absolute left-0 mt-2 w-64 bg-white rounded-xl shadow-lg border border-gray-100 py-2 transform origin-top-left transition-all duration-200 ease-out z-50">
+                  <div className="grid grid-cols-1 gap-1 p-2">
+                    <button
+                      onClick={() => {
+                        setIsGuideDropdownOpen(false);
+                        onGuideClick('process');
+                      }}
+                      className="text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors"
+                    >
+                      Quy trình khám chữa bệnh
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsGuideDropdownOpen(false);
+                        onGuideClick('insurance');
+                      }}
+                      className="text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors"
+                    >
+                      Dịch vụ bảo hiểm
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsGuideDropdownOpen(false);
+                        onGuideClick('payment');
+                      }}
+                      className="text-left px-4 py-2 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 rounded-lg transition-colors"
+                    >
+                      Thủ tục thanh toán
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <a href="#" onClick={(e) => { e.preventDefault(); onNewsClick(); }} className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium">Tin tức</a>
             {role === 'doctor' ? (
               <button 
                 onClick={onPatientsClick}
                 className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Patients
+                Bệnh nhân
               </button>
             ) : (
               <button 
                 onClick={onAppointmentClick}
                 className="text-gray-700 hover:text-blue-600 px-3 py-2 rounded-md text-sm font-medium"
               >
-                Make Appointment
+                Đặt lịch khám
               </button>
             )}
             {isLoggedIn ? (
@@ -79,7 +171,7 @@ const Navbar = ({ onSignInClick, isLoggedIn, username, role, onLogout, onProfile
                 {isDropdownOpen && (
                   <div className="absolute right-0 mt-3 w-60 bg-white rounded-xl shadow-lg border border-gray-100 py-2 transform origin-top-right transition-all duration-200 ease-out">
                     <div className="px-4 py-3 border-b border-gray-100">
-                      <p className="text-xs text-gray-500 uppercase tracking-wider">Signed in as</p>
+                      <p className="text-xs text-gray-500 uppercase tracking-wider">Đăng nhập với</p>
                       <p className="text-sm font-bold text-gray-900 truncate">{username}</p>
                     </div>
 
@@ -134,7 +226,7 @@ const Navbar = ({ onSignInClick, isLoggedIn, username, role, onLogout, onProfile
                 onClick={onSignInClick}
                 className="bg-blue-600 text-white hover:bg-blue-700 px-4 py-2 rounded-md text-sm font-medium"
               >
-                Sign In
+                Đăng nhập
               </button>
             )}
           </div>

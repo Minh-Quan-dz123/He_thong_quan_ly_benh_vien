@@ -47,9 +47,9 @@ const UserProfile = ({ role }: UserProfileProps) => {
       <div className="bg-white shadow overflow-hidden sm:rounded-lg">
         <div className="px-4 py-5 sm:px-6 flex justify-between items-center">
           <div>
-            <h3 className="text-lg leading-6 font-medium text-gray-900">Personal Information</h3>
+            <h3 className="text-lg leading-6 font-medium text-gray-900">Thông tin cá nhân</h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">
-              {role === 'doctor' ? 'Doctor Profile' : 'Patient Profile'} - Personal details and health overview.
+              {role === 'doctor' ? 'Hồ sơ bác sĩ' : 'Hồ sơ bệnh nhân'} - Chi tiết cá nhân và tổng quan sức khỏe.
             </p>
           </div>
           <div className="flex items-center space-x-4">
@@ -58,7 +58,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
                 onClick={handleEdit}
                 className="bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors"
               >
-                Edit Profile
+                Chỉnh sửa hồ sơ
               </button>
             ) : (
               <div className="flex space-x-2">
@@ -66,13 +66,13 @@ const UserProfile = ({ role }: UserProfileProps) => {
                   onClick={handleSave}
                   className="bg-green-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
                 >
-                  Save
+                  Lưu
                 </button>
                 <button
                   onClick={handleCancel}
                   className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 transition-colors"
                 >
-                  Cancel
+                  Hủy
                 </button>
               </div>
             )}
@@ -86,7 +86,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
         <div className="border-t border-gray-200">
           <dl>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500 self-center">Patient ID</dt>
+              <dt className="text-sm font-medium text-gray-500 self-center">Mã bệnh nhân</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 <input
                   type="text"
@@ -97,7 +97,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500 self-center">Full name</dt>
+              <dt className="text-sm font-medium text-gray-500 self-center">Họ và tên</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 {isEditing ? (
                   <input
@@ -111,7 +111,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500 self-center">Date of Birth</dt>
+              <dt className="text-sm font-medium text-gray-500 self-center">Ngày sinh</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 {isEditing ? (
                   <input
@@ -125,7 +125,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
               </dd>
             </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500 self-center">Gender</dt>
+              <dt className="text-sm font-medium text-gray-500 self-center">Giới tính</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 {isEditing ? (
                   <select
@@ -134,15 +134,15 @@ const UserProfile = ({ role }: UserProfileProps) => {
                     onChange={handleChange}
                     className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border p-2"
                   >
-                    <option value="Male">Male</option>
-                    <option value="Female">Female</option>
-                    <option value="Other">Other</option>
+                    <option value="Male">Nam</option>
+                    <option value="Female">Nữ</option>
+                    <option value="Other">Khác</option>
                   </select>
-                ) : user.gender}
+                ) : (user.gender === 'Male' ? 'Nam' : user.gender === 'Female' ? 'Nữ' : 'Khác')}
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500 self-center">Email address</dt>
+              <dt className="text-sm font-medium text-gray-500 self-center">Địa chỉ Email</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 {isEditing ? (
                   <input
@@ -156,7 +156,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
               </dd>
             </div>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500 self-center">Phone number</dt>
+              <dt className="text-sm font-medium text-gray-500 self-center">Số điện thoại</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 {isEditing ? (
                   <input
@@ -170,7 +170,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500 self-center">Address</dt>
+              <dt className="text-sm font-medium text-gray-500 self-center">Địa chỉ</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 {isEditing ? (
                   <input
@@ -185,7 +185,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
             </div>
             {role === 'doctor' && (
               <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-                <dt className="text-sm font-medium text-gray-500 self-center">Department</dt>
+                <dt className="text-sm font-medium text-gray-500 self-center">Khoa</dt>
                 <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                   {isEditing ? (
                     <input
@@ -200,7 +200,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
               </div>
             )}
              <div className={`${role === 'doctor' ? 'bg-white' : 'bg-gray-50'} px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-              <dt className="text-sm font-medium text-gray-500 self-center">Blood Type</dt>
+              <dt className="text-sm font-medium text-gray-500 self-center">Nhóm máu</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 {isEditing ? (
                   <input
@@ -214,7 +214,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
               </dd>
             </div>
              <div className={`${role === 'doctor' ? 'bg-gray-50' : 'bg-white'} px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-              <dt className="text-sm font-medium text-gray-500 self-center">Height / Weight</dt>
+              <dt className="text-sm font-medium text-gray-500 self-center">Chiều cao / Cân nặng</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 {isEditing ? (
                   <div className="flex space-x-4">
@@ -223,7 +223,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
                       name="height"
                       value={tempUser.height}
                       onChange={handleChange}
-                      placeholder="Height"
+                      placeholder="Chiều cao"
                       className="w-1/2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border p-2"
                     />
                     <input
@@ -231,7 +231,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
                       name="weight"
                       value={tempUser.weight}
                       onChange={handleChange}
-                      placeholder="Weight"
+                      placeholder="Cân nặng"
                       className="w-1/2 border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border p-2"
                     />
                   </div>
@@ -239,7 +239,7 @@ const UserProfile = ({ role }: UserProfileProps) => {
               </dd>
             </div>
              <div className={`${role === 'doctor' ? 'bg-white' : 'bg-gray-50'} px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6`}>
-              <dt className="text-sm font-medium text-gray-500 self-center">Allergies</dt>
+              <dt className="text-sm font-medium text-gray-500 self-center">Dị ứng</dt>
               <dd className={`mt-1 text-sm sm:mt-0 sm:col-span-2 ${isEditing ? 'text-gray-900' : 'text-red-600'}`}>
                 {isEditing ? (
                   <input
