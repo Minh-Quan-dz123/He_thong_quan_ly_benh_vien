@@ -1,13 +1,19 @@
 from fastapi import FastAPI, HTTPException, status
 from fastapi.middleware.cors import CORSMiddleware
 from database import db
-from schemas import UserRegister, UserResponse
-from utils import get_password_hash, hash_document_number, encrypt_document_number
+from schemas import UserRegister, UserResponse, UserLogin, OTPRequest, OTPVerify, ResetPassword, UserDetailResponse, UserUpdate, AppointmentCreate, AppointmentResponse
+from utils import get_password_hash, hash_document_number, encrypt_document_number, verify_password
+# from sms_service import send_sms
 from pymongo.errors import DuplicateKeyError
+from bson import ObjectId
 import uvicorn
 from typing import List
+import random
 
 app = FastAPI(title="Patient Service API")
+
+# In-memory OTP storage (for demonstration)
+otp_storage = {}
 
 # CORS
 app.add_middleware(
@@ -82,6 +88,130 @@ async def register(user: UserRegister):
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@app.post("/login", response_model=UserResponse)
+async def login(user_login: UserLogin):
+    # Try to find by username
+    user = db.get_db().patients.find_one({"username": user_login.identifier})
+    
+    # If not found by username, try by phone
+    if not user:
+        user = db.get_db().patients.find_one({"phone": user_login.identifier})
+    
+    if not user:
+        raise HTTPException(status_code=400, detail="Tên đăng nhập hoặc số điện thoại không tồn tại")
+        
+    if not verify_password(user_login.password, user['password_hash']):
+        raise HTTPException(status_code=400, detail="Mật khẩu không chính xác")
+        
+    return UserResponse(
+        id=str(user["_id"]),
+        username=user["username"],
+        name=user["name"],
+        phone=user["phone"]
+    )
+
+@app.post("/forgot-password/request-otp")
+async def request_otp(request: OTPRequest):
+    user = db.get_db().patients.find_one({"phone": request.phone})
+    if not user:
+        raise HTTPException(status_code=404, detail="Số điện thoại không tồn tại trong hệ thống")
+    
+    otp = str(random.randint(100000, 999999))
+    otp_storage[request.phone] = otp
+    
+    message = f"Ma OTP cua ban la: {otp}. Ma nay co hieu luc trong 5 phut."
+    send_sms(request.phone, message)
+    
+    return {"message": "Mã OTP đã được gửi"}
+
+@app.post("/forgot-password/verify-otp")
+async def verify_otp(request: OTPVerify):
+    if request.phone not in otp_storage or otp_storage[request.phone] != request.otp:
+        raise HTTPException(status_code=400, detail="Mã OTP không chính xác hoặc đã hết hạn")
+    return {"message": "Mã OTP hợp lệ"}
+
+@app.post("/forgot-password/reset")
+async def reset_password(request: ResetPassword):
+    if request.phone not in otp_storage or otp_storage[request.phone] != request.otp:
+        raise HTTPException(status_code=400, detail="Mã OTP không chính xác hoặc đã hết hạn")
+    
+    password_hash = get_password_hash(request.new_password)
+    db.get_db().patients.update_one(
+        {"phone": request.phone},
+        {"$set": {"password_hash": password_hash}}
+    )
+    del otp_storage[request.phone]
+    return {"message": "Đổi mật khẩu thành công"}
+
+@app.get("/patients/{user_id}", response_model=UserDetailResponse)
+async def get_patient_detail(user_id: str):
+    try:
+        user = db.get_db().patients.find_one({"_id": ObjectId(user_id)})
+        if not user:
+            raise HTTPException(status_code=404, detail="User not found")
+        
+        return UserDetailResponse(
+            id=str(user["_id"]),
+            username=user["username"],
+            name=user["name"],
+            dob=user["dob"],
+            gender=user["gender"],
+            phone=user["phone"],
+            documentType=user["documentType"],
+            address=user["address"],
+            bloodType=user.get("bloodType"),
+            height=user.get("height"),
+            weight=user.get("weight"),
+            allergies=user.get("allergies")
+        )
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+@app.put("/patients/{user_id}", response_model=UserDetailResponse)
+async def update_patient(user_id: str, user_update: UserUpdate):
+    try:
+        # Filter out None values
+        update_data = {k: v for k, v in user_update.dict().items() if v is not None}
+        
+        if not update_data:
+            raise HTTPException(status_code=400, detail="No data provided for update")
+
+        # Check if phone is being updated and if it already exists
+        if "phone" in update_data:
+            existing_user = db.get_db().patients.find_one({"phone": update_data["phone"], "_id": {"$ne": ObjectId(user_id)}})
+            if existing_user:
+                raise HTTPException(status_code=400, detail="Phone number already exists")
+
+        result = db.get_db().patients.update_one(
+            {"_id": ObjectId(user_id)},
+            {"$set": update_data}
+        )
+
+        if result.matched_count == 0:
+            raise HTTPException(status_code=404, detail="User not found")
+
+        # Fetch updated user
+        updated_user = db.get_db().patients.find_one({"_id": ObjectId(user_id)})
+        
+        return UserDetailResponse(
+            id=str(updated_user["_id"]),
+            username=updated_user["username"],
+            name=updated_user["name"],
+            dob=updated_user["dob"],
+            gender=updated_user["gender"],
+            phone=updated_user["phone"],
+            documentType=updated_user["documentType"],
+            address=updated_user["address"],
+            bloodType=updated_user.get("bloodType"),
+            height=updated_user.get("height"),
+            weight=updated_user.get("weight"),
+            allergies=updated_user.get("allergies")
+        )
+    except HTTPException as he:
+        raise he
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
 @app.get("/patients", response_model=List[UserResponse])
 async def get_all_patients():
     patients = []
@@ -94,6 +224,56 @@ async def get_all_patients():
             phone=doc["phone"]
         ))
     return patients
+
+@app.delete("/patients", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_all_patients():
+    try:
+        db.get_db().patients.delete_many({})
+        return
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.post("/appointments", response_model=AppointmentResponse, status_code=status.HTTP_201_CREATED)
+async def create_appointment(appointment: AppointmentCreate):
+    appointment_dict = appointment.dict()
+    appointment_dict['status'] = 'Pending'
+    
+    try:
+        new_appointment = db.get_db().appointments.insert_one(appointment_dict)
+        created_appointment = db.get_db().appointments.find_one({"_id": new_appointment.inserted_id})
+        
+        return AppointmentResponse(
+            id=str(created_appointment["_id"]),
+            doctor=created_appointment["doctor"],
+            date=created_appointment["date"],
+            time=created_appointment["time"],
+            reason=created_appointment["reason"],
+            phone=created_appointment["phone"],
+            patient_id=created_appointment.get("patient_id"),
+            status=created_appointment["status"]
+        )
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.get("/appointments", response_model=List[AppointmentResponse])
+async def get_appointments():
+    try:
+        appointments = list(db.get_db().appointments.find())
+        return [
+            AppointmentResponse(
+                id=str(appt["_id"]),
+                doctor=appt["doctor"],
+                date=appt["date"],
+                time=appt["time"],
+                reason=appt["reason"],
+                phone=appt["phone"],
+                patient_id=appt.get("patient_id"),
+                status=appt["status"]
+            )
+            for appt in appointments
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
 
 if __name__ == "__main__":
     uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
