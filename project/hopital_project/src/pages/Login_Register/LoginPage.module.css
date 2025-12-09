@@ -1,0 +1,193 @@
+.Root_LoginPage {
+
+    width: 100vw;
+    height: 100vh;
+    position: fixed;
+    display: flex;
+    flex-direction: row;
+    align-items: center; /* căn giữa theo trục phụ */
+    
+    padding: 0 0 0 0;
+
+}
+
+/* left - phần chào mừng */
+.welcome_section 
+{
+    background-image: url('../../assets/login.jpg');
+    background-size: cover; /* bao phủ toàn bộ khu vực */
+    background-position: center; /* căn giữa hình nền */
+
+    color: rgb(255, 140, 0);
+    padding-top: 50px;
+    display: flex;
+    flex-direction: column; /*trục chính */
+    justify-content: center; /* căn chính theo trục chính */
+
+    
+    width: 39%;
+    height: 80%;
+    text-align: center; /* căn giữa cho text */
+
+    border: 2px solid black;
+    border-radius: 12px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+
+    margin-left: 10%;
+    margin-right: 1%;
+}
+.welcome_header
+{
+    font-size: 36px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+.welcome_content
+{
+    font-size: 24px;
+}
+
+/* right - phần form đăng nhập */
+.form_section
+{
+    color: black;
+    padding-top: 50px;
+    display: flex;
+    flex-direction: column;
+   
+    align-items: center; /* căn giữa theo chiều phụ */
+    background-color: rgb(178, 216, 246);
+
+    height: 80%;
+    width: 39%;
+
+    border: 2px solid rgb(255, 255, 255);
+    border-radius: 12px;
+    box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.3);
+
+    margin-right: 10%;
+    margin-left: 1%;
+}
+
+.form_section h2
+{
+    font-size: 32px;
+    font-weight: bold;
+    margin-bottom: 1px;
+}
+
+.form_section p
+{
+    font-size: 20px;
+    margin-bottom: 40px;
+
+    /* làm mờ */
+    color: rgb(100, 100, 100);
+}
+
+
+.roleSelection
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    width: 100%;
+    padding: 2px;
+    background-color: lightgray;
+    border-radius: 8px;
+}
+
+.selectedRoleButton
+{
+    width: 33%;
+    height: 40px;
+    background-color: white;
+    border:1px solid black;
+    border-color: aliceblue;
+    cursor: pointer;
+    border-radius: 8px;
+    font-weight: 600;
+}
+
+.NotSelectedRoleButton
+{
+    width: 33%;
+    height: 40px;
+    background-color: rgb(211, 211, 211);
+    border: none;
+    cursor: pointer;
+    font-weight: 600;
+    border-radius: 8px;
+}
+
+.formLogin
+{
+    display: flex;
+    flex-direction: column;
+    width: 80%;
+}
+
+.inputGroup
+{
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin-bottom: 20px;
+}
+
+.inputGroup label
+{
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.inputGroup input
+{
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid gray;
+    border-radius: 6px;
+}
+
+.forgotPassword
+{
+    background-color: transparent;
+    border: none;
+    color: blue;
+    text-align: right;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.loginButton
+{
+    width: 100%;
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    color: white;
+    background-color: rgb(0, 123, 255);
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.loginButton:hover
+{
+    background-color: rgb(0, 100, 210);
+}
+
+.registerButton
+{
+    margin-top: 20px;
+    background-color: transparent;
+    border: none;
+    color: blue;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: underline;
+}
+
+
