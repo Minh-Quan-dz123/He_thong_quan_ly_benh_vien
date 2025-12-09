@@ -1,17 +1,24 @@
 import { useState } from 'react';
-import Navbar from './components/Navbar';
-import Hero from './components/Hero';
-import Doctors from './components/Doctors';
-import Contact from './components/Contact';
-import SignIn from './components/SignIn';
-import UserProfile from './components/UserProfile';
-import MedicalRecords from './components/MedicalRecords';
-import Appointment from './components/Appointment';
-import DoctorPatients from './components/DoctorPatients';
-import News from './components/News';
-import QuickAccess from './components/QuickAccess';
-import Specialties from './components/Specialties';
-import PatientGuide from './components/PatientGuide';
+// 1. Nhóm Common
+import Navbar from './components/common/Navbar';
+import Hero from './components/common/Hero';
+import QuickAccess from './components/common/QuickAccess';
+import Doctors from './components/patient/Doctors';
+import Contact from './components/common/Contact';
+import SignIn from './components/common/SignIn';
+import UserProfile from './components/common/UserProfile';
+import News from './components/common/News';
+
+// 2. Nhóm Patient
+import MedicalRecords from './components/patient/MedicalRecords';
+import Appointment from './components/patient/Appointment';
+import Specialties from './components/patient/Specialties';
+import PatientGuide from './components/patient/PatientGuide';
+
+// 3. Nhóm Doctor
+import DoctorPatients from './components/doctor/DoctorPatients';
+// import DoctorDashboard from './components/doctor/DoctorDashboard'; // (Mở comment khi bạn đã tạo file này)
+// import Prescription from './components/doctor/Prescription';       // (Mở comment khi bạn đã tạo file này)
 
 function App() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);

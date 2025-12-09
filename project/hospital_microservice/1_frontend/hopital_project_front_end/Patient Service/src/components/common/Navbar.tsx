@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { specialtiesData } from './Specialties';
+import { specialtiesData } from "../../components/patient/Specialties";
 
 interface NavbarProps {
   onSignInClick: () => void;
