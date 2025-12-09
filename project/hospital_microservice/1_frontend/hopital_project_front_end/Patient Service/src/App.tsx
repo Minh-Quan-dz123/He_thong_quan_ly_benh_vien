@@ -17,15 +17,16 @@ import PatientGuide from './components/patient/PatientGuide';
 
 // 3. Nhóm Doctor
 import DoctorPatients from './components/doctor/DoctorPatients';
-// import DoctorDashboard from './components/doctor/DoctorDashboard'; // (Mở comment khi bạn đã tạo file này)
-// import Prescription from './components/doctor/Prescription';       // (Mở comment khi bạn đã tạo file này)
+import DoctorDashboard from './components/doctor/DoctorDashboard';
+import AppointmentManager from './components/doctor/AppointmentManager';
+import Prescription from './components/doctor/Prescription';
 
 function App() {
   const [isSignInOpen, setIsSignInOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('');
   const [userRole, setUserRole] = useState<'patient' | 'doctor' | null>(null);
-  const [currentView, setCurrentView] = useState<'home' | 'profile' | 'records' | 'appointment' | 'patients' | 'news' | 'specialties' | 'guide'>('home');
+  const [currentView, setCurrentView] = useState<'home' | 'profile' | 'records' | 'appointment' | 'patients' | 'news' | 'specialties' | 'doctor-dashboard' | 'doctor-appointments' | 'doctor-prescription' | 'guide'>('home');
   const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<string | undefined>(undefined);
   const [guideSection, setGuideSection] = useState<'process' | 'insurance' | 'payment'>('process');
 
@@ -86,6 +87,12 @@ function App() {
         return <Specialties initialSpecialtyId={selectedSpecialtyId} key={selectedSpecialtyId} />;
       case 'guide':
         return <PatientGuide section={guideSection} />;
+        case 'doctor-dashboard':
+        return <DoctorDashboard />;      // Nhớ import file này ở đầu trang
+      case 'doctor-prescription':
+        return <Prescription />;         // Nhớ import file này ở đầu trang
+      case 'doctor-appointments':
+        return <AppointmentManager />;   // Nhớ import file này ở đầu trang
       default:
         return (
           <>
@@ -114,6 +121,9 @@ function App() {
         onPatientsClick={handlePatientsClick}
         onSpecialtyClick={handleSpecialtyClick}
         onGuideClick={handleGuideClick}
+        onDoctorDashboardClick={() => setCurrentView('doctor-dashboard')}
+        onDoctorAppointmentsClick={() => setCurrentView('doctor-appointments')}
+        onDoctorPrescriptionClick={() => setCurrentView('doctor-prescription')}
       />
       {renderContent()}
       <SignIn 
