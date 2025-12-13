@@ -1,15 +1,23 @@
+
 {
-  "version": 2,
-  "builds": [
-    {
-      "src": "api/main.py",
-      "use": "@vercel/python"
-    }
-  ],
-  "routes": [
-    {
-      "src": "\\/(.*)",
-      "dest": "/api/main.py"
-    }
-  ]
+	"version": 2,
+	"builds": [
+		{
+			"src": "main.py",
+			"use": "@vercel/python"
+		}
+	],
+	"routes": [
+		{
+			"src": "/(.*)",
+			"dest": "main.py"
+		}
+	],
+	"env": {
+		"DATABASE_URL": "@DATABASE_URL",
+		"TWILIO_ACCOUNT_SID": "@TWILIO_ACCOUNT_SID",
+		"TWILIO_AUTH_TOKEN": "@TWILIO_AUTH_TOKEN",
+		"SMS_FROM_NUMBER": "@SMS_FROM_NUMBER",
+		"SECRET_KEY": "@SECRET_KEY"
+	}
 }
