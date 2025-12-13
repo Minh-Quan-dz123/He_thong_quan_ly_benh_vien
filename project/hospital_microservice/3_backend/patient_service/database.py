@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
+import certifi
 
 MONGO_URI = "mongodb+srv://ngoquan:ngoquan@cluster0.sjfre6b.mongodb.net/"
 DB_NAME = "hospital_db"
@@ -10,7 +11,8 @@ class Database:
 
     def connect(self):
         try:
-            self.client = MongoClient(MONGO_URI)
+            # Thêm tlsCAFile=certifi.where() để đảm bảo SSL hoạt động đúng
+            self.client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
             self.db = self.client[DB_NAME]
             # Create unique indexes
             self.db.patients.create_index("username", unique=True)

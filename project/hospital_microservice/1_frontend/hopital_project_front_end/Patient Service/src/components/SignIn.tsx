@@ -1,23 +1,62 @@
 import React, { useState } from 'react';
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
 interface SignInProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (username: string, role: 'patient' | 'doctor') => void;
+  onLogin: (user: any, role: 'patient' | 'doctor') => void;
+  onRegisterClick: () => void;
+  onForgotPasswordClick: () => void;
 }
 
-const SignIn = ({ isOpen, onClose, onLogin }: SignInProps) => {
-  const [username, setUsername] = useState('');
+const SignIn = ({ isOpen, onClose, onLogin, onRegisterClick, onForgotPasswordClick }: SignInProps) => {
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [role, setRole] = useState<'patient' | 'doctor'>('patient');
+  const [error, setError] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (username) {
-      onLogin(username, role);
-      onClose();
+    setError('');
+    setIsLoading(true);
+
+    try {
+      if (role === 'patient') {
+        const response = await fetch(`${API_BASE_URL}/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            identifier: identifier,
+            password: password
+          }),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          onLogin(data, role);
+          onClose();
+        } else {
+          const errorData = await response.json();
+          setError(errorData.detail || 'Đăng nhập thất bại');
+        }
+      } else {
+        // Mock login for doctor for now, or implement doctor service login later
+        if (identifier && password) {
+           onLogin(identifier, role);
+           onClose();
+        }
+      }
+    } catch (err) {
+      setError('Không thể kết nối đến server');
+      console.error(err);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -69,7 +108,7 @@ const SignIn = ({ isOpen, onClose, onLogin }: SignInProps) => {
             <p className="text-gray-500 mt-2">Vui lòng nhập thông tin của bạn để tiếp tục</p>
           </div>
           
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-4">
             {/* Role Selection */}
             <div className="flex p-1 bg-gray-100 rounded-lg">
               <button
@@ -97,7 +136,7 @@ const SignIn = ({ isOpen, onClose, onLogin }: SignInProps) => {
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Tên đăng nhập</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Tên đăng nhập hoặc Số điện thoại</label>
               <div className="relative">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                   <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -108,9 +147,9 @@ const SignIn = ({ isOpen, onClose, onLogin }: SignInProps) => {
                   type="text"
                   required
                   className="block w-full pl-10 pr-3 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 transition-colors"
-                  placeholder="Nhập tên đăng nhập của bạn"
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
+                  placeholder="Nhập tên đăng nhập hoặc SĐT"
+                  value={identifier}
+                  onChange={(e) => setIdentifier(e.target.value)}
                 />
               </div>
             </div>
@@ -134,12 +173,14 @@ const SignIn = ({ isOpen, onClose, onLogin }: SignInProps) => {
               </div>
             </div>
 
+            {error && <div className="text-red-500 text-sm text-center">{error}</div>}
+
             <div className="flex items-center justify-between text-sm">
               <label className="flex items-center">
                 <input type="checkbox" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                 <span className="ml-2 text-gray-600">Ghi nhớ đăng nhập</span>
               </label>
-              <a href="#" className="text-blue-600 hover:text-blue-500 font-medium">Quên mật khẩu?</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); onForgotPasswordClick(); }} className="text-blue-600 hover:text-blue-500 font-medium">Quên mật khẩu?</a>
             </div>
 
             <button
@@ -151,7 +192,7 @@ const SignIn = ({ isOpen, onClose, onLogin }: SignInProps) => {
 
             <div className="mt-6 text-center text-sm text-gray-500">
               Chưa có tài khoản?{' '}
-              <a href="#" className="text-blue-600 hover:text-blue-500 font-medium">Đăng ký ngay</a>
+              <a href="#" onClick={(e) => { e.preventDefault(); onRegisterClick(); }} className="text-blue-600 hover:text-blue-500 font-medium">Đăng ký ngay</a>
             </div>
           </form>
         </div>

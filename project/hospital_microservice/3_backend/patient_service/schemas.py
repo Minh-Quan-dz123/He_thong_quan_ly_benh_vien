@@ -73,22 +73,24 @@ class ResetPassword(BaseModel):
     new_password: str
 
 class AppointmentCreate(BaseModel):
-    doctor: str
+    appointmentType: str = "new"
+    doctor: Optional[str] = None
     date: str
-    time: str
     reason: str
     phone: str
-    patient_id: Optional[str] = None # Optional, in case we want to link it to a registered user
+    patient_id: Optional[str] = None
 
 class AppointmentResponse(BaseModel):
     id: str
-    doctor: str
+    appointmentType: str
+    doctor: Optional[str] = None
     date: str
-    time: str
     reason: str
     phone: str
     patient_id: Optional[str] = None
     status: str
+    sequence_number: int
+    message: Optional[str] = None
 
     class Config:
         from_attributes = True

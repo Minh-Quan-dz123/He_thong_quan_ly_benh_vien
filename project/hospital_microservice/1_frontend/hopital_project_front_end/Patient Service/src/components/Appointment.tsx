@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
 
-const Appointment = () => {
+interface AppointmentProps {
+  currentUser?: any;
+}
+
+const Appointment = ({ currentUser }: AppointmentProps) => {
+  const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
   const [formData, setFormData] = useState({
+    appointmentType: 'new',
     doctor: '',
     date: '',
-    time: '',
     reason: '',
-    phone: ''
+    phone: currentUser?.phone || ''
   });
   const [submitted, setSubmitted] = useState(false);
+  const [sequenceNumber, setSequenceNumber] = useState<number | null>(null);
 
   const doctors = [
     'Dr. Sarah Wilson - Tim mạch',
@@ -16,11 +22,33 @@ const Appointment = () => {
     'Dr. Emily Parker - Nhi khoa'
   ];
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Simulate API call
-    console.log('Appointment submitted:', formData);
-    setSubmitted(true);
+    
+    try {
+      const response = await fetch(`${API_BASE_URL}/appointments`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          ...formData,
+          patient_id: currentUser?.id
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        setSequenceNumber(data.sequence_number);
+        setSubmitted(true);
+      } else {
+        const errorData = await response.json();
+        alert(`Đặt lịch thất bại: ${errorData.detail}`);
+      }
+    } catch (error) {
+      console.error("Error booking appointment:", error);
+      alert("Đã xảy ra lỗi khi đặt lịch.");
+    }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
@@ -38,6 +66,11 @@ const Appointment = () => {
             </svg>
           </div>
           <h2 className="text-2xl font-bold text-gray-900 mb-2">Đã đặt lịch hẹn!</h2>
+          {sequenceNumber && (
+            <p className="text-xl font-semibold text-blue-600 mb-4">
+              Số thứ tự của bạn là: {sequenceNumber}
+            </p>
+          )}
           <p className="text-gray-600">
             Cảm ơn bạn đã đặt lịch hẹn. Chúng tôi đã gửi xác nhận đến email của bạn.
           </p>
@@ -63,40 +96,58 @@ const Appointment = () => {
         <form onSubmit={handleSubmit} className="p-8 space-y-6">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Chọn bác sĩ</label>
-              <select
-                name="doctor"
-                required
-                value={formData.doctor}
-                onChange={handleChange}
-                className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 border p-3"
-              >
-                <option value="">Chọn một bác sĩ...</option>
-                {doctors.map((doc, index) => (
-                  <option key={index} value={doc}>{doc}</option>
-                ))}
-              </select>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Loại khám</label>
+              <div className="flex space-x-6">
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="appointmentType"
+                    value="new"
+                    checked={formData.appointmentType === 'new'}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <span className="ml-2 text-gray-700">Khám mới</span>
+                </label>
+                <label className="flex items-center cursor-pointer">
+                  <input
+                    type="radio"
+                    name="appointmentType"
+                    value="re_exam"
+                    checked={formData.appointmentType === 're_exam'}
+                    onChange={handleChange}
+                    className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300"
+                  />
+                  <span className="ml-2 text-gray-700">Tái khám</span>
+                </label>
+              </div>
             </div>
 
-            <div>
+            {formData.appointmentType === 're_exam' && (
+              <div className="col-span-2">
+                <label className="block text-sm font-medium text-gray-700 mb-1">Chọn bác sĩ</label>
+                <select
+                  name="doctor"
+                  required={formData.appointmentType === 're_exam'}
+                  value={formData.doctor}
+                  onChange={handleChange}
+                  className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 border p-3"
+                >
+                  <option value="">Chọn một bác sĩ...</option>
+                  {doctors.map((doc, index) => (
+                    <option key={index} value={doc}>{doc}</option>
+                  ))}
+                </select>
+              </div>
+            )}
+
+            <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">Ngày</label>
               <input
                 type="date"
                 name="date"
                 required
                 value={formData.date}
-                onChange={handleChange}
-                className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 border p-3"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Giờ</label>
-              <input
-                type="time"
-                name="time"
-                required
-                value={formData.time}
                 onChange={handleChange}
                 className="w-full border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 border p-3"
               />

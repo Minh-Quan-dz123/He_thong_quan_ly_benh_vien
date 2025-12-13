@@ -1,16 +1,15 @@
 import React from 'react';
+import { useParams, Link } from 'react-router-dom';
 
-interface PatientGuideProps {
-  section: 'process' | 'insurance' | 'payment';
-}
-
-const PatientGuide = ({ section }: PatientGuideProps) => {
+const PatientGuide = () => {
+  const { section } = useParams<{ section: string }>();
+  
   const getTitle = () => {
     switch (section) {
       case 'process': return 'Quy trình khám chữa bệnh';
       case 'insurance': return 'Dịch vụ bảo hiểm';
       case 'payment': return 'Thủ tục thanh toán';
-      default: return '';
+      default: return 'Hướng dẫn';
     }
   };
 
@@ -19,7 +18,7 @@ const PatientGuide = ({ section }: PatientGuideProps) => {
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="flex text-sm text-gray-500 mb-8">
-          <a href="#" className="hover:text-blue-600">Trang chủ</a>
+          <Link to="/" className="hover:text-blue-600">Trang chủ</Link>
           <span className="mx-2">›</span>
           <span className="text-gray-900">Hướng dẫn bệnh nhân</span>
           <span className="mx-2">›</span>

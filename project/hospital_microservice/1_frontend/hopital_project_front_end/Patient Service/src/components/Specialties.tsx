@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, Link } from 'react-router-dom';
 
 interface Doctor {
   name: string;
@@ -68,18 +69,23 @@ interface SpecialtiesProps {
   initialSpecialtyId?: string;
 }
 
-const Specialties = ({ initialSpecialtyId }: SpecialtiesProps) => {
-  const [selectedSpecialtyId, setSelectedSpecialtyId] = useState<string>(initialSpecialtyId || specialtiesData[0].id);
+const Specialties = () => {
+  const { id } = useParams<{ id: string }>();
   const [activeTab, setActiveTab] = useState<'overview' | 'technology' | 'doctors'>('overview');
 
-  const selectedSpecialty = specialtiesData.find(s => s.id === selectedSpecialtyId) || specialtiesData[0];
+  const selectedSpecialty = specialtiesData.find(s => s.id === id) || specialtiesData[0];
+
+  // Reset tab when specialty changes
+  useEffect(() => {
+    setActiveTab('overview');
+  }, [id]);
 
   return (
     <div className="bg-gray-50 min-h-screen py-12">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Breadcrumb */}
         <nav className="flex text-sm text-gray-500 mb-8">
-          <a href="#" className="hover:text-blue-600">Trang chủ</a>
+          <Link to="/" className="hover:text-blue-600">Trang chủ</Link>
           <span className="mx-2">›</span>
           <span className="text-gray-900">Chuyên khoa</span>
           <span className="mx-2">›</span>
@@ -179,9 +185,18 @@ const Specialties = ({ initialSpecialtyId }: SpecialtiesProps) => {
                       <h4 className="text-xl font-bold text-gray-900 mb-1">{doctor.name}</h4>
                       <p className="text-blue-600 font-medium mb-2">{doctor.specialty}</p>
                       <p className="text-gray-500 text-sm">{doctor.experience}</p>
-                      <button className="mt-4 w-full py-2 px-4 bg-blue-50 text-blue-600 font-semibold rounded-lg hover:bg-blue-100 transition-colors">
-                        Đặt lịch khám
-                      </button>
+                      {isLoggedIn ? (
+                        <Link to="/appointment" className="block text-center mt-4 w-full py-2 px-4 bg-blue-50 text-blue-600 font-semibold rounded-lg hover:bg-blue-100 transition-colors">
+                          Đặt lịch khám
+                        </Link>
+                      ) : (
+                        <button 
+                          onClick={onSignInClick}
+                          className="mt-4 w-full py-2 px-4 bg-blue-50 text-blue-600 font-semibold rounded-lg hover:bg-blue-100 transition-colors"
+                        >
+                          Đặt lịch khám
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

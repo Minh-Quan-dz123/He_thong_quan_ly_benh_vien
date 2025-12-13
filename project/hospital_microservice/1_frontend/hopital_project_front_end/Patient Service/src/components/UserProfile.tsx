@@ -1,36 +1,114 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 interface UserProfileProps {
   role?: 'patient' | 'doctor' | null;
+  currentUser?: any;
+  showSuccessToast: (title: string, message: string) => void;
 }
 
-const UserProfile = ({ role }: UserProfileProps) => {
+const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) => {
   const [isEditing, setIsEditing] = useState(false);
   const [user, setUser] = useState({
-    id: 'PAT-2023-001',
-    name: 'Nguyen Van A',
-    dob: '1990-01-01',
-    gender: 'Male',
-    phone: '+84 123 456 789',
-    email: 'nguyenvana@example.com',
-    address: '123 Le Loi, District 1, Ho Chi Minh City',
-    bloodType: 'O+',
-    height: '175 cm',
-    weight: '70 kg',
-    allergies: 'Peanuts, Penicillin',
-    department: 'Cardiology'
+    id: '',
+    name: '',
+    dob: '',
+    gender: '',
+    phone: '',
+    address: '',
+    bloodType: '',
+    height: '',
+    weight: '',
+    allergies: '',
+    department: ''
   });
 
+  useEffect(() => {
+    if (currentUser && currentUser.id) {
+      const fetchUserData = async () => {
+        try {
+          const response = await fetch(`${API_BASE_URL}/patients/${currentUser.id}`);
+          if (response.ok) {
+            const data = await response.json();
+            setUser({
+              id: data.id,
+              name: data.name,
+              dob: data.dob,
+              gender: data.gender,
+              phone: data.phone,
+              address: data.address,
+              bloodType: data.bloodType || '',
+              height: data.height || '',
+              weight: data.weight || '',
+              allergies: data.allergies || '',
+              department: 'General'
+            });
+          }
+        } catch (error) {
+          console.error("Failed to fetch user data", error);
+        }
+      };
+      fetchUserData();
+    }
+  }, [currentUser]);
+
   const [tempUser, setTempUser] = useState(user);
+
+  // Update tempUser when user changes
+  useEffect(() => {
+    setTempUser(user);
+  }, [user]);
 
   const handleEdit = () => {
     setTempUser(user);
     setIsEditing(true);
   };
 
-  const handleSave = () => {
-    setUser(tempUser);
-    setIsEditing(false);
+  const handleSave = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/patients/${user.id}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          name: tempUser.name,
+          dob: tempUser.dob,
+          gender: tempUser.gender,
+          phone: tempUser.phone,
+          address: tempUser.address,
+          bloodType: tempUser.bloodType,
+          height: tempUser.height,
+          weight: tempUser.weight,
+          allergies: tempUser.allergies
+        }),
+      });
+
+      if (response.ok) {
+        const updatedUser = await response.json();
+        setUser({
+          ...user,
+          name: updatedUser.name,
+          dob: updatedUser.dob,
+          gender: updatedUser.gender,
+          phone: updatedUser.phone,
+          address: updatedUser.address,
+          bloodType: updatedUser.bloodType || '',
+          height: updatedUser.height || '',
+          weight: updatedUser.weight || '',
+          allergies: updatedUser.allergies || '',
+        });
+        setIsEditing(false);
+        showSuccessToast("Cập nhật thành công!", "Thông tin hồ sơ của bạn đã được lưu.");
+      } else {
+        const errorData = await response.json();
+        alert(`Cập nhật thất bại: ${errorData.detail}`);
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      alert("Đã xảy ra lỗi khi cập nhật hồ sơ.");
+    }
   };
 
   const handleCancel = () => {
@@ -142,20 +220,6 @@ const UserProfile = ({ role }: UserProfileProps) => {
               </dd>
             </div>
             <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500 self-center">Địa chỉ Email</dt>
-              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
-                {isEditing ? (
-                  <input
-                    type="email"
-                    name="email"
-                    value={tempUser.email}
-                    onChange={handleChange}
-                    className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border p-2"
-                  />
-                ) : user.email}
-              </dd>
-            </div>
-            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
               <dt className="text-sm font-medium text-gray-500 self-center">Số điện thoại</dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 {isEditing ? (

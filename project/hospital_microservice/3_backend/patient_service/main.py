@@ -1,4 +1,6 @@
-from fastapi import FastAPI, HTTPException, status
+from fastapi import FastAPI, HTTPException, status, Request
+from fastapi.exceptions import RequestValidationError
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
 from database import db
 from schemas import UserRegister, UserResponse, UserLogin, OTPRequest, OTPVerify, ResetPassword, UserDetailResponse, UserUpdate, AppointmentCreate, AppointmentResponse
@@ -7,10 +9,19 @@ from utils import get_password_hash, hash_document_number, encrypt_document_numb
 from pymongo.errors import DuplicateKeyError
 from bson import ObjectId
 import uvicorn
-from typing import List
+from typing import List, Optional
 import random
 
 app = FastAPI(title="Patient Service API")
+
+@app.exception_handler(RequestValidationError)
+async def validation_exception_handler(request: Request, exc: RequestValidationError):
+    print(f"Validation error: {exc.errors()}")
+    print(f"Body: {await request.body()}")
+    return JSONResponse(
+        status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        content={"detail": exc.errors(), "body": str(exc.body)},
+    )
 
 # In-memory OTP storage (for demonstration)
 otp_storage = {}
@@ -239,41 +250,92 @@ async def create_appointment(appointment: AppointmentCreate):
     appointment_dict['status'] = 'Pending'
     
     try:
+        # Calculate sequence number for the specific date
+        count = db.get_db().appointments.count_documents({"date": appointment.date})
+        sequence_number = count + 1
+        appointment_dict['sequence_number'] = sequence_number
+
         new_appointment = db.get_db().appointments.insert_one(appointment_dict)
         created_appointment = db.get_db().appointments.find_one({"_id": new_appointment.inserted_id})
         
         return AppointmentResponse(
             id=str(created_appointment["_id"]),
-            doctor=created_appointment["doctor"],
+            appointmentType=created_appointment.get("appointmentType", "new"),
+            doctor=created_appointment.get("doctor"),
             date=created_appointment["date"],
-            time=created_appointment["time"],
             reason=created_appointment["reason"],
             phone=created_appointment["phone"],
             patient_id=created_appointment.get("patient_id"),
-            status=created_appointment["status"]
+            status=created_appointment["status"],
+            sequence_number=created_appointment["sequence_number"],
+            message=f"Số thứ tự của bạn là {created_appointment['sequence_number']}"
         )
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/appointments", response_model=List[AppointmentResponse])
-async def get_appointments():
+async def get_appointments(date: Optional[str] = None):
     try:
-        appointments = list(db.get_db().appointments.find())
+        query = {}
+        if date:
+            query["date"] = date
+            
+        appointments = list(db.get_db().appointments.find(query))
         return [
             AppointmentResponse(
                 id=str(appt["_id"]),
-                doctor=appt["doctor"],
+                appointmentType=appt.get("appointmentType", "new"),
+                doctor=appt.get("doctor"),
                 date=appt["date"],
-                time=appt["time"],
                 reason=appt["reason"],
                 phone=appt["phone"],
                 patient_id=appt.get("patient_id"),
-                status=appt["status"]
+                status=appt["status"],
+                sequence_number=appt.get("sequence_number", 0)
             )
             for appt in appointments
         ]
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", host="0.0.0.0", port=8000, reload=True)
+@app.get("/appointments/patient/{patient_id}", response_model=List[AppointmentResponse])
+async def get_patient_appointments(patient_id: str):
+    try:
+        appointments = list(db.get_db().appointments.find({"patient_id": patient_id}))
+        return [
+            AppointmentResponse(
+                id=str(appt["_id"]),
+                appointmentType=appt.get("appointmentType", "new"),
+                doctor=appt.get("doctor"),
+                date=appt["date"],
+                reason=appt["reason"],
+                phone=appt["phone"],
+                patient_id=appt.get("patient_id"),
+                status=appt.get("status", "Pending"),
+                sequence_number=appt.get("sequence_number", 0)
+            )
+            for appt in appointments
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/appointments/{appointment_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_appointment(appointment_id: str):
+    try:
+        result = db.get_db().appointments.delete_one({"_id": ObjectId(appointment_id)})
+        if result.deleted_count == 0:
+            raise HTTPException(status_code=404, detail="Appointment not found")
+        return
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@app.delete("/appointments", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_appointments_by_date(date: str):
+    try:
+        # Delete all appointments for the specific date
+        db.get_db().appointments.delete_many({"date": date})
+        return
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+
