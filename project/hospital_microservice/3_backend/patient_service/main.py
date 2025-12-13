@@ -10,6 +10,7 @@ from pymongo.errors import DuplicateKeyError
 from bson import ObjectId
 from typing import List, Optional
 import random
+from mangum import Mangum
 
 app = FastAPI(title="Patient Service API")
 
@@ -336,6 +337,9 @@ async def delete_appointments_by_date(date: str):
         return
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+
+# Handler for Vercel deployment
+handler = Mangum(app)
 
 
 
