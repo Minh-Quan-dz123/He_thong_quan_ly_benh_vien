@@ -339,3 +339,8 @@ async def delete_appointments_by_date(date: str):
         raise HTTPException(status_code=500, detail=str(e))
 
 
+# Adapter for serverless platforms (Vercel expects a callable handler)
+from mangum import Mangum
+handler = Mangum(app)
+
+
