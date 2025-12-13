@@ -13,11 +13,6 @@
 			"dest": "main.py"
 		}
 	],
-	"functions": {
-		"main.py": {
-			"runtime": "python3.9"
-		}
-	},
 	"env": {
 		"DATABASE_URL": "@DATABASE_URL",
 		"TWILIO_ACCOUNT_SID": "@TWILIO_ACCOUNT_SID",

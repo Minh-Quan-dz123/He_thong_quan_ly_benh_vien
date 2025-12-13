@@ -121,19 +121,19 @@ async def login(user_login: UserLogin):
         phone=user["phone"]
     )
 
-@app.post("/forgot-password/request-otp")
-async def request_otp(request: OTPRequest):
-    user = db.get_db().patients.find_one({"phone": request.phone})
-    if not user:
-        raise HTTPException(status_code=404, detail="Số điện thoại không tồn tại trong hệ thống")
+# @app.post("/forgot-password/request-otp")
+# async def request_otp(request: OTPRequest):
+#     user = db.get_db().patients.find_one({"phone": request.phone})
+#     if not user:
+#         raise HTTPException(status_code=404, detail="Số điện thoại không tồn tại trong hệ thống")
     
-    otp = str(random.randint(100000, 999999))
-    otp_storage[request.phone] = otp
+#     otp = str(random.randint(100000, 999999))
+#     otp_storage[request.phone] = otp
     
-    message = f"Ma OTP cua ban la: {otp}. Ma nay co hieu luc trong 5 phut."
-    send_sms(request.phone, message)
+#     message = f"Ma OTP cua ban la: {otp}. Ma nay co hieu luc trong 5 phut."
+#     send_sms(request.phone, message)
     
-    return {"message": "Mã OTP đã được gửi"}
+#     return {"message": "Mã OTP đã được gửi"}
 
 @app.post("/forgot-password/verify-otp")
 async def verify_otp(request: OTPVerify):
