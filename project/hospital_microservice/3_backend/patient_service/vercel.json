@@ -9,7 +9,7 @@
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/main.py"
+      "dest": "/project/hospital_microservice/3_backend/patient_service/api/main.py"
     }
   ]
 }
