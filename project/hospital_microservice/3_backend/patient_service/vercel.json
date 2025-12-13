@@ -2,14 +2,14 @@
   "version": 2,
   "builds": [
     {
-      "src": "/project/hospital_microservice/3_backend/patient_service/api/main.py",
+      "src": "api/main.py",
       "use": "@vercel/python"
     }
   ],
   "routes": [
     {
-      "src": "/(.*)",
-      "dest": "/project/hospital_microservice/3_backend/patient_service/api/main.py"
+      "src": "\\/(.*)",
+      "dest": "/api/main.py"
     }
   ]
 }
