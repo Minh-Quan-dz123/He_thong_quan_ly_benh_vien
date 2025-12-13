@@ -8,7 +8,6 @@ from utils import get_password_hash, hash_document_number, encrypt_document_numb
 # from sms_service import send_sms
 from pymongo.errors import DuplicateKeyError
 from bson import ObjectId
-import uvicorn
 from typing import List, Optional
 import random
 
