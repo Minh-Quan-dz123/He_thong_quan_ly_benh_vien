@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import {useState} from "react"
 import styles from "./HomeAdmin.module.css";
+import bgHome from "../../assets/backgroundHomeAdmin.jpg";
 
 export default function HomeAdmin()
 {
@@ -14,10 +15,16 @@ export default function HomeAdmin()
 
     const handleClickButtonMain = (buttonMain) =>{
         setActiveButtonMain(buttonMain);// cập nhật button đang chọn
+        // mở sang giao diện 
     }
 
     const handleClickButtonLeftMenu = (buttonLeft) =>{
         setActiveButtonLeft(buttonLeft);
+        //"Department", "Doctor", "Patient", "Appointment", "Notification"
+        if(buttonLeft === "Department") navigate("/HomeAdmin/ManagerDepartment");
+        if(buttonLeft == "Doctor") navigate("/HomeAdmin/ManageDoctors");
+        if(buttonLeft == "Patient") navigate("/HomeAdmin/ManageListPatient");
+        if(buttonLeft == "Notification") navigate("/HomeAdmin/CreateNotification");
     }
 
     // button ☰ 
@@ -77,7 +84,7 @@ export default function HomeAdmin()
 
                 {/* phần hiển thị chi tiết(hiện tại hiển thị hình là chính) */}
                 <div>   
-                    <img src = "https://www.kindpng.com/picc/m/136-1369892_hospital-clipart-png-hospital-icon-png-transparent-png.png" alt="Hospital Admin Home" />
+                    <img className={styles.imageHome} src = {bgHome} alt="Hospital Admin Home" />
                 </div>
             </div>
         </div>

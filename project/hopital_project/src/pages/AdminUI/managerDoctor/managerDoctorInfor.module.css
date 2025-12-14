@@ -1,0 +1,299 @@
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.pageContainer {
+
+  padding: 0px;
+  font-family: Arial, sans-serif;
+  border-radius: 8px;
+  width: 100%;
+  background-color: #f5f7fa; /* ➕ thêm nền xám nhạt */
+}
+
+.duoi
+{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.left
+{
+    padding: 0;
+    margin-right: 20px;
+    max-width: 25%;
+}
+
+.divTop {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.backButton {
+  background-color: #258fd6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+
+    cursor: pointer;
+    margin-bottom: 20px;
+    width: 100px;
+    transition: all 0.3s ease; /* thêm transition mượt */ 
+    
+    margin-top:20px;
+    margin-left: 20px;
+}
+
+.titleh2 {
+    width: 100%;
+    text-align: center;
+    margin-bottom: 40px;
+    margin-top: 0;
+    margin-left: 50px;
+}
+
+.titleh2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin: 0;
+}
+
+.divBottom {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 20px;
+  padding: 10px;
+  padding-bottom: 50px;
+  align-items: center;
+  margin-right: 5%;
+}
+
+
+/* ===== Search Section ===== */
+
+.searchSection {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 16px 20px;
+ 
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  margin: 20px;
+  width: 40%;
+  
+  
+}
+
+/* Input search */
+.searchSection input {
+  flex: 1;
+  padding: 10px 14px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: 1px solid #dcdcdc;
+  outline: none;
+  transition: all 0.2s ease;
+}
+
+.searchSection input:focus {
+  border-color: #4a90e2;
+  box-shadow: 0 0 0 2px rgba(74, 144, 226, 0.2);
+}
+
+/* Confirm button */
+.searchSection button {
+  padding: 10px 18px;
+  font-size: 14px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: #4a90e2;
+  color: white;
+  font-weight: 500;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.searchSection button:hover {
+  background-color: #357abd;
+}
+
+.searchSection button:active {
+  transform: scale(0.97);
+}
+
+.conSearch
+{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+
+    width: 100%;
+}
+
+/* */
+.suggestions {
+  position: absolute;
+  top: calc(100% + 6px);
+  left: 20px;
+  right: 120px; /* chừa chỗ cho nút Confirm */
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  max-height: 220px;
+  overflow-y: auto;
+  z-index: 1000;
+}
+
+/* mỗi item */
+.suggestionItem {
+  padding: 10px 14px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.suggestionItem:last-child {
+  border-bottom: none;
+}
+
+.suggestionItem:hover {
+  background-color: #f5f8ff;
+}
+
+/* ID nổi bật hơn name */
+.suggestionItem span {
+  font-weight: 600;
+  color: #333;
+}
+
+.parenFormGroup
+{
+    display: flex;
+    flex-direction: row;
+    width: 80%;
+    gap:30px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  margin-left: 10px;
+  width: 45%;
+  margin-bottom: 10px;
+}
+
+.formGroup label {
+  display: flex;
+  flex-direction: column;
+  font-weight: bold;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.formGroup input,
+.formGroup select {
+  padding: 6px 10px;
+  font-size: 14px;
+  border-radius: 4px;
+  border: 1px solid #ccc;
+  margin-top: 5px;
+  width: 40%;
+}
+
+.formGroup button {
+  width: 180px;
+  padding: 8px 12px;
+  font-size: 14px;
+  border: none;
+  border-radius: 5px;
+  background-color: #4caf50;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+
+.formGroup button:hover {
+  background-color: #45a049;
+}
+
+.con {
+  padding: 20px;
+  background-color: #ffffff; /* ➕ nền trắng */
+  border-radius: 8px;        /* ➕ bo góc */
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08); /* ➕ shadow nhẹ */
+}
+
+
+.doctorTable {
+  margin-top: 15px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.doctorTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.doctorTable thead {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.doctorTable th,
+.doctorTable td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.doctorTable th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+.doctorTable button {
+  padding: 4px 8px;
+  font-size: 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #2196f3;
+  color: white;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.doctorTable button:hover {
+  background-color: #1976d2;
+}
+
+.buttonGroup {
+  margin-top: 30%;
+  display: flex;
+  flex-direction: column;
+  padding-left: 60px;
+
+}
+
+.buttonGroup button {
+  background-color: #4caf50;
+  margin-right: 10px;
+  margin-bottom: 30px;
+}
+
+.buttonGroup button:hover {
+  background-color: #45a049;
+}

@@ -1,0 +1,47 @@
+
+
+.departmentTable {
+    width: 100%; /* chiều rộng cố định */
+    border-collapse: collapse; /* gộp đường viền */
+    margin: 20px auto; /* căn giữa bảng */
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* bóng nhẹ */
+    font-family: Arial, sans-serif;
+}
+
+.departmentTable th, .departmentTable td {
+    border: 1px solid black; /* viền đen */
+    padding: 10px; /* khoảng cách bên trong ô */
+    text-align: center; /* header và data nằm giữa */
+}
+
+.departmentTable th {
+    background-color: #4CAF50; /* màu nền header */
+    color: white; /* chữ trắng */
+    font-weight: bold;
+}
+
+.departmentTable tr:nth-child(even) {
+    background-color: #f2f2f2; /* xen kẽ màu nền cho các dòng */
+}
+
+.departmentTable tr:hover {
+    background-color: #ddd; /* hover nhẹ */
+}
+
+.detailsButton
+{
+    background-color: #5e94dc; 
+    color: white;
+    border: none; 
+    padding: 6px 12px; 
+    border-radius: 5px; 
+    cursor: pointer; 
+    transition: all 0.3s ease; /* hiệu ứng chuyển màu mượt */
+    font-size: 14px;
+}
+
+.detailsButton:hover {
+    background-color: #2062c6; /* đổi màu khi hover */
+    transform: translateY(-1px); /* hơi nhấc lên khi hover */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* bóng nhẹ */
+}

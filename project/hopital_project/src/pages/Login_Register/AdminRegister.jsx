@@ -75,7 +75,7 @@ export default function AdminRegister()
 
     return (
         <div className = {styles.containerAdminRegister}>
-            <button  className = {styles.backButton} onClick = {() => navigate(-1)}> ⬅ Quay lại </button>
+            <button  className = {styles.backButton} onClick = {() => navigate(-1)}> ⬅ Back </button>
             <h2 className = {styles.header}>Đăng ký tài khoản admin quản lý bệnh viện</h2>
             <form className = {styles.form} onSubmit = {handleSubmit}> {/* gọi hàm xử lý khi gửi form */}
                 <div>
