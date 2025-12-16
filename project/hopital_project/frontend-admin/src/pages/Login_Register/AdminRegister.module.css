@@ -1,0 +1,120 @@
+/* Container tổng thể */
+.containerAdminRegister {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100vw;
+    min-height: 100vh;
+    padding: 40px 20px;
+    background: linear-gradient(to bottom, #a0e1f1, #ffffff);
+    background-image: url('../../assets/image.png');
+    background-size: cover;
+    background-position: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Button quay lại */
+.backButton {
+    position: fixed;
+    left: 30px;
+    top: 20px;
+    font-size: 18px;
+    font-weight: bold;
+    background-color: rgba(255,255,255,0.7);
+    border: none;
+    padding: 8px 14px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.backButton:hover {
+    background-color: rgba(255,255,255,0.9);
+}
+
+/* Tiêu đề */
+.header {
+    margin-top: 60px;
+    font-size: 36px;
+    font-weight: bold;
+    text-align: center;
+    color: #0b3d91;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    margin-bottom: 30px;
+}
+
+/* Form */
+.form {
+    background-color: rgba(255, 255, 255, 0.95);
+    padding: 40px 30px;
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    width: 100%;
+    max-width: 500px;
+}
+
+/* Hàng input */
+.form div {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+/* Label */
+.form label {
+    font-weight: 600;
+    color: #333;
+    font-size: 16px;
+}
+
+/* Input */
+.form input {
+    padding: 12px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    transition: 0.3s;
+}
+
+.form input:focus {
+    outline: none;
+    border-color: #0b3d91;
+    box-shadow: 0 0 5px rgba(11,61,145,0.3);
+}
+
+/* Submit button */
+.submitButton {
+    padding: 12px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 10px;
+    background-color: #0b3d91;
+    color: white;
+    border: none;
+    cursor: pointer;
+    transition: 0.3s;
+    margin-top: 10px;
+}
+
+.submitButton:hover {
+    background-color: #1450b3;
+}
+
+/* Thông báo kết quả đăng ký */
+.registerStatus {
+    margin-top: 15px;
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.registerStatus.success {
+    color: green;
+}
+
+.registerStatus.error {
+    color: red;
+}

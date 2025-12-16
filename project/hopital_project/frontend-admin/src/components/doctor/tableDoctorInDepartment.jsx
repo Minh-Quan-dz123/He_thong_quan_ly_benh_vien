@@ -1,0 +1,133 @@
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import styles from "./tableDoctor.module.css";
+
+export default function TableDoctorInDepartment()
+{
+    // component hiển thị bảng danh sách các bác sĩ trong 1 khoa
+    /* thông tin 1 bác sĩ gồm:
+    // (STT)
+    // id của bác sĩ
+    // tên bác sĩ
+    // giới tính
+    // vị trí/chức danh
+    // chuyên khoa
+    hiển thị bảng với tối đa 10 bác sĩ mỗi trang table, nếu
+    có nhiều hơn 10 bác sĩ thì phân trang để xem các bác sĩ tiếp theo
+    */
+    // 1. lấy id khoa từ tham số URL
+    const {departmentId} = useParams();
+    console.log("Department ID từ URL: ", departmentId);
+
+    // 2. khai báo state để chứa danh sách bác sĩ
+    const [doctors, setDoctors] = useState([]);
+    const [loading, setLoading] = useState(true);
+    // 2.1 state để theo dõi trang hiện tại
+    const [indexCurrentPage, setIndexCurrentPage] = useState(0);
+    const doctorsPerPage = 10; // số bác sĩ mỗi trang
+
+    // 3. hàm gọi API lấy danh sách bác sĩ trong khoa từ server
+    const fetchDoctors = async()=>{
+        try{
+            setLoading(true);
+            // giả lập server xử lý 1.5 giây dùng setTimeout
+            await new Promise((resolve) => setTimeout (resolve, 1500));
+            // gọi API
+            const res = await fetch(`http://localhost:8080/api/departments/${departmentId}/doctors`,{
+                method : "GET",
+                headers: {
+                    "Content-Type": "application/json",
+                }
+            });
+            // kiểm tra kết quả trả về
+            if(!res.ok)
+            {
+                console.error("Lỗi khi lấy danh sách bác sĩ trong khoa");
+                setLoading(false);
+                return;
+            }
+            // nếu oke thì đọc dữ liệu
+            const data = await res.json();
+            setDoctors(data);
+            setLoading(false);
+            
+        }
+        catch(error)
+        {
+            console.error("Lỗi khi gọi API: ", error);
+            setLoading(false);
+        }
+    }
+
+    // 4. tự động gọi hàm fetchDoctors khi component được load lần đầu hoặc thay đổi departmentId
+    useEffect(() => {
+        fetchDoctors();
+    }, [departmentId]);
+    // 4.1 nếu đang loading UI
+    if(loading){
+        return(
+            <div>
+                <p> Loading... </p>
+            </div>
+        );
+    }
+    //4 phân trang
+    const indexOfFirstDoctor = indexCurrentPage * doctorsPerPage; // index bác sĩ đầu tiên của trang hiện tại
+    const listDoctorsCurrentPage = doctors.slice(indexOfFirstDoctor, indexOfFirstDoctor + doctorsPerPage); // danh sách bác sĩ của trang hiện tại mảng lấy ra là [,....) (ko lấy phần tử cuối)
+    const totalPages = Math.ceil(doctors.length / doctorsPerPage); // tổng số trang hiển thị danh sách bác sĩ (làm tròn lên)
+
+    // hàm xử lý khi người dùng bấm next page
+    const handleNextPage = () =>{
+        if(indexCurrentPage + 1 <= totalPages - 1) // 2+1 = 4-1 => trang cuối
+        {
+            setIndexCurrentPage(indexCurrentPage + 1);
+        }
+        
+    };
+
+    // hàm xử lý khi người dùng bấm lùi về trang trước đó
+    const handlePreviousPage = () => {
+        if(indexCurrentPage > 0) {
+            setIndexCurrentPage(indexCurrentPage - 1);
+        }
+    };
+
+    return(
+        <div className={styles.tableDoctorInHopital}>
+                    <h2> List of Doctors in the Department </h2>
+        
+                    <table>
+                        <thead>
+                            <tr>
+                                <th> STT </th>
+                                <th> ID Doctor </th>
+                                <th> Doctor Name </th>
+                                <th> Gender </th>
+                                <th> Position </th>
+                                <th> Specialty </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {/* hiển thị danh sách bác sĩ của trang hiện tại: listDoctorsCurrentPage ko phải doctors */}
+                            {listDoctorsCurrentPage.map((doctor, index) => (
+                                <tr key={doctor.id}>
+                                    <td>{index + 1}</td>
+                                    <td>{doctor.id}</td>
+                                    <td>{doctor.name}</td>
+                                    <td>{doctor.gender}</td>
+                                    <td>{doctor.position}</td>
+                                    <td>{doctor.specialty}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+        
+                    {/* xử lý phân trang */}
+                    <div className={styles.pagination}>
+                        <button onClick={handlePreviousPage} disabled={indexCurrentPage === 0}> &lt; </button>
+                        <span> Trang {indexCurrentPage + 1} / {totalPages} </span>
+                        <button onClick={handleNextPage} disabled={indexCurrentPage + 1 === totalPages}> &gt; </button>
+                    </div>
+                </div>
+    )
+}

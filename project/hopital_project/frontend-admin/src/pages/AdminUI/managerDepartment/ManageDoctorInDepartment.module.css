@@ -1,0 +1,244 @@
+html, body {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+/*root*/
+.container
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 650px;
+}
+
+/* trên */
+.divTop
+{
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 10px;
+    height: 130px;
+}
+
+.divTop button
+{
+    background-color: #258fd6;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 5px;
+
+    cursor: pointer;
+    margin-bottom: 0px;
+    width: 100px;
+    transition: all 0.3s ease; /* thêm transition mượt */ 
+    
+    margin-top:20px;
+    margin-left: 20px;
+}
+
+.divTop button:hover
+{
+    background-color: #1b6b9f;
+}
+
+.divTop h2
+{
+    margin-left: 90px;
+    width: 100%;
+    text-align: center;
+}
+
+/*dưới*/
+/*left*/
+.divBottom
+{
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+}
+
+.leftMenu
+{
+    max-width: 25%;
+}
+
+/*right*/
+.rightResult
+{
+    width: 100%;
+    margin-top: 10px;
+    margin-left: 20px;
+    margin-right:10px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 400px;
+}
+
+.divInput
+{
+    margin-top: 10px;
+    width: 90%;
+    display: flex;
+    justify-content: center;   /* canh giữa ngang */
+    
+}
+/* ô nhập ID */
+.divInput input {
+    padding: 10px 14px;
+    border: 1px solid #cfd8dc;
+    border-radius: 8px;
+    font-size: 15px;
+    width: 220px;
+    outline: none;
+    transition: all 0.25s ease;
+}
+
+.divInput input:focus {
+    border-color: #4dabf7;
+    box-shadow: 0 0 5px rgba(36, 167, 255, 0.4);
+}
+
+/* nút Confirm */
+.divInput button {
+    padding: 10px 18px;
+    background-color: #4dabf7;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.25s ease;
+
+    margin-left: 10px;
+}
+
+.searchFilters
+{
+    margin-top: 10px;
+    width: 98%;
+    margin-bottom: 20px;
+
+    display: flex;
+    justify-content: center;   /* canh giữa ngang */
+
+}
+
+
+/* style chung cho input + select */
+.searchFilters input {
+    margin-left: 10px;
+    padding: 10px 14px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #cfd8dc;
+    background-color: #ffffff;
+    outline: none;
+    width: 120px;
+    transition: all 0.25s ease;
+}
+.searchFilters select{
+    padding: 10px 14px;
+    font-size: 15px;
+    border-radius: 8px;
+    border: 1px solid #cfd8dc;
+    background-color: #ffffff;
+    outline: none;
+    width: 100px;
+    transition: all 0.25s ease;
+}
+
+
+.searchFilters input:hover,
+.searchFilters select:hover {
+    border-color: #90caf9;
+}
+
+.searchFilters input:focus,
+.searchFilters select:focus {
+    border-color: #4dabf7;
+    box-shadow: 0 0 6px rgba(36, 167, 255, 0.4);
+}
+
+
+.tableDoctorInHopital
+{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 20px;
+    width: 90%;
+    min-width: 700px;
+    max-width: 900px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    min-height: 500px
+}
+
+.tableDoctorInHopital h2 {
+    text-align: center;
+    margin-bottom: 15px;
+    color: #1976d2;
+}
+
+.tableDoctorInHopital table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 15px;
+}
+
+.tableDoctorInHopital th {
+    background-color: #1976d2;
+    color: white;
+    padding: 12px 10px;
+    text-align: left;
+    font-weight: 600;
+}
+
+.tableDoctorInHopital td {
+    padding: 10px 12px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Hàng chẵn */
+.tableDoctorInHopital tbody tr:nth-child(even) {
+    background-color: #f5faff;
+}
+
+.tableDoctorInHopital tbody tr:hover {
+    background-color: #e3f2fd !important;;
+    transition: 0.2s;
+}
+
+/* Căn giữa cột STT */
+.tableDoctorInHopital td:first-child,
+.tableDoctorInHopital th:first-child {
+    text-align: center;
+}
+
+.pagination {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 14px;
+}
+
+/*button xóa*/
+.deleteBtn
+{
+   background-color: #ff4d4f;   /* đỏ nhẹ */
+    border: none;
+    padding: 6px 10px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: 0.3s;
+}
