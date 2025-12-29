@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import styles from "./DepartmentDetailPage.module.css";
+import {API} from "../../../config/appConfig";
 
 export default function DepartmentDetailPage({ depId }) {
 
@@ -87,7 +88,7 @@ export default function DepartmentDetailPage({ depId }) {
     setLoading(true);
     try {
       const token = localStorage.getItem("token");
-      const res = await fetch("http://127.0.0.1:3000/doctors", {
+      const res = await fetch(`${API.DOCTOR}/doctors`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -140,7 +141,7 @@ export default function DepartmentDetailPage({ depId }) {
       setLoading(true);
 
       const res = await fetch(
-        `http://127.0.0.1:3000/departments/${editDepartment.id}`,
+        `${API.ADMIN}/departments/${editDepartment.id}`,
         {
           method: "PATCH",
           headers: {
@@ -206,7 +207,7 @@ export default function DepartmentDetailPage({ depId }) {
       setLoading(true);
 
       const res = await fetch(
-        `http://127.0.0.1:3000/departments/${editDepartment.id}`,
+        `${API.ADMIN}/departments/${editDepartment.id}`,
         {
           method: "DELETE",
           headers: { Authorization: `Bearer ${token}` },

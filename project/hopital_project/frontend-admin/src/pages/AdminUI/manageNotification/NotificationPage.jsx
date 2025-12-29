@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./NotificationPage.module.css";
 import LeftMenu from "../../../components/Notification/LeftMenuNotification.jsx";
+import {API} from '../../../config/appConfig'
 
 // Tabs
 import CreateNotification from "./createNotification.jsx";

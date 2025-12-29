@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import styles from "./ManageDepartment.module.css";
 import TableDepartmentsList from "../../../components/department/tableDepartmentList";
+import {API} from "../../../config/appConfig";
 
 export default function ManageDepartment({ onSelectDepartment }) {
   const [departments, setDepartments] = useState([]);
@@ -16,7 +17,7 @@ export default function ManageDepartment({ onSelectDepartment }) {
     try {
       await new Promise((r) => setTimeout(r, 400));
 
-      const res = await fetch("http://127.0.0.1:3000/departments", {
+      const res = await fetch(`${API.ADMIN}/departments`, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,

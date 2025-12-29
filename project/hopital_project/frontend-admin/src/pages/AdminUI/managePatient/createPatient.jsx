@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "./createPatient.module.css";
+import {API} from "../../../config/appConfig";
 
 export default function CreatePatient() {
     // 1 khai báo state

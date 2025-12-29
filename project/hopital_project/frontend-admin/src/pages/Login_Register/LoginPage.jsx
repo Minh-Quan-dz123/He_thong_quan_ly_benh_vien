@@ -4,6 +4,7 @@ import styles from "./LoginPage.module.css";
 import { GoogleLogin } from "@react-oauth/google";
 import googleLogo from "../../assets/icon/google.png";
 import  {jwtDecode}  from "jwt-decode";
+import { API } from "../../config/appConfig";
 export default function LoginPage()
 {
     // 0---new-- thêm token----
@@ -38,7 +39,7 @@ export default function LoginPage()
         
         try{
             
-            const res = await fetch("http://127.0.0.1:3000/auth/login",{
+            const res = await fetch(`${API.ADMIN}/auth/login`,{
                 method: "POST",
                 headers: 
                 {
@@ -96,7 +97,7 @@ export default function LoginPage()
     //2.5 đăng nhập bằng google (tạm chưa dùng)
     const handleGoogleLogin = async (credentialResponse) => {
         try {
-            const res = await fetch("http://127.0.0.1:3000/auth/google", {
+            const res = await fetch("http://localhost:3001/auth/google", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

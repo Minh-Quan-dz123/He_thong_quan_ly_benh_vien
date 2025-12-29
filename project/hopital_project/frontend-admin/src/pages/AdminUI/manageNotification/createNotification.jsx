@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import styles from './createNotification.module.css'
+import {API} from '../../../config/appConfig'
 
 export default function CreateNotification()
 {
@@ -35,8 +36,8 @@ export default function CreateNotification()
         const fetchListReceiver = async () => {
             try {
                 const [docRes, patRes] = await Promise.all([
-                    fetch("http://localhost:8080/api/doctors"),
-                    fetch("http://localhost:8080/api/patients"),
+                    fetch(`${API.DOCTOR}/doctors`),
+                    fetch(`${API.PATIENT}/patients`),
                 ]);
 
                 if (!docRes.ok || !patRes.ok) throw new Error("Fetch failed");
@@ -150,7 +151,7 @@ export default function CreateNotification()
         };
 
         try {
-            const res = await fetch("http://localhost:8080/api/notifications", {
+            const res = await fetch(`${API.SCHEDULE}/notifications`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

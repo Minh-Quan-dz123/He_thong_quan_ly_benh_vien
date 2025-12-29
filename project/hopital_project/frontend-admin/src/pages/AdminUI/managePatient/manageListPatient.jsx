@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./manageListPatient.module.css";
+import {API} from "../../../config/appConfig";
 
 export default function ManagerListPatient() {
 
@@ -23,7 +24,7 @@ export default function ManagerListPatient() {
     const fetchPatients = async () => {
         try 
         {
-        const res = await fetch("/api/patients");
+        const res = await fetch(`${API.PATIENT}/patients`);
         const data = await res.json();
         setPatients(data); // lưu vào data
         setFilteredPatients(data);

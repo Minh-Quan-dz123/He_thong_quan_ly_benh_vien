@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import styles from "./HistoryNotification.module.css";
+import {API} from '../../../config/appConfig'
 
 export default function HistoryNotification() {
 
@@ -15,7 +16,7 @@ export default function HistoryNotification() {
     useEffect(() => {
         const fetchNotifications = async () => {
             try {
-                const res = await fetch("http://localhost:8080/api/notifications");
+                const res = await fetch(`${API.SCHEDULE}/notifications`);
                 if (!res.ok) throw new Error("Fetch failed");
                 const data = await res.json();
                 setNotifications(data);

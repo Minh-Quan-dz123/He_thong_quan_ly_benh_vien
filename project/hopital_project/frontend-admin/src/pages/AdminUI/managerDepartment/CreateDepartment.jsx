@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "./CreateDepartment.module.css";
+import {API} from "../../../config/appConfig";
 
 export default function CreateDepartment() {
 
@@ -49,7 +50,7 @@ export default function CreateDepartment() {
     {
       setLoading(true);
 
-      const res = await fetch("http://localhost:3000/departments", {
+      const res = await fetch(`${API.ADMIN}/departments`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

@@ -2,6 +2,7 @@ import { useState } from "react";
 import {useNavigate} from "react-router-dom"; // cần thiết để chuyển hướng
 // nhúng file css
 import styles from "./AdminRegister.module.css";
+import { API } from "../../config/appConfig";
 
 // admin bệnh viện đăng ký tài khoản cho bản thân
 // 1 admin điền thông tin vào form đăng ký
@@ -41,7 +42,7 @@ export default function AdminRegister()
 
         // 3.1 gọi API để gửi dữ liệu đăng ký tới server
         try{
-            const res = await fetch("http://127.0.0.1:3000/admins",{ // tạm thời dùng localhost
+            const res = await fetch(`${API.ADMIN}/admin`,{ // tạm thời dùng localhost
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",// gửi dữ liệu là JSON
