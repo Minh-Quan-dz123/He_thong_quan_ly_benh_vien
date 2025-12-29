@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const DOCTOR_API_BASE_URL = import.meta.env.VITE_DOCTOR_API_BASE_URL || (API_BASE_URL.includes(':8000') ? API_BASE_URL.replace(':8000', ':8001') : API_BASE_URL);
 
 interface SignInProps {
   isOpen: boolean;
@@ -25,33 +27,28 @@ const SignIn = ({ isOpen, onClose, onLogin, onRegisterClick, onForgotPasswordCli
     setIsLoading(true);
 
     try {
-      if (role === 'patient') {
-        const response = await fetch(`${API_BASE_URL}/login`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            identifier: identifier,
-            password: password
-          }),
-        });
+      const targetUrl = role === 'doctor' ? DOCTOR_API_BASE_URL : API_BASE_URL;
+      const response = await fetch(`${targetUrl}/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          identifier: identifier,
+          password: password
+        }),
+      });
 
-        if (response.ok) {
-          const data = await response.json();
-          onLogin(data, role);
-          onClose();
-        } else {
-          const errorData = await response.json();
-          setError(errorData.detail || 'Đăng nhập thất bại');
-        }
+      if (response.ok) {
+        const data = await response.json();
+        // backend returns `role` (patient or doctor)
+        onLogin(data, data.role || 'patient');
+        onClose();
       } else {
-        // Mock login for doctor for now, or implement doctor service login later
-        if (identifier && password) {
-           onLogin(identifier, role);
-           onClose();
-        }
+        const errorData = await response.json();
+        setError(errorData.detail || 'Đăng nhập thất bại');
       }
+    
     } catch (err) {
       setError('Không thể kết nối đến server');
       console.error(err);
@@ -61,7 +58,7 @@ const SignIn = ({ isOpen, onClose, onLogin, onRegisterClick, onForgotPasswordCli
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
       <div className="bg-white rounded-2xl shadow-2xl w-full max-w-4xl overflow-hidden flex flex-col md:flex-row relative animate-fade-in-up">
         <button
           onClick={onClose}
@@ -180,19 +177,32 @@ const SignIn = ({ isOpen, onClose, onLogin, onRegisterClick, onForgotPasswordCli
                 <input type="checkbox" className="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded" />
                 <span className="ml-2 text-gray-600">Ghi nhớ đăng nhập</span>
               </label>
-              <a href="#" onClick={(e) => { e.preventDefault(); onForgotPasswordClick(); }} className="text-blue-600 hover:text-blue-500 font-medium">Quên mật khẩu?</a>
+              <button 
+                type="button"
+                onClick={onForgotPasswordClick}
+                className="text-blue-600 hover:text-blue-500 font-medium"
+              >
+                Quên mật khẩu?
+              </button>
             </div>
 
             <button
               type="submit"
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all transform hover:scale-[1.02]"
+              disabled={isLoading}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all transform hover:scale-[1.02] disabled:opacity-50"
             >
-              Đăng nhập
+              {isLoading ? 'Đang xử lý...' : 'Đăng nhập'}
             </button>
 
             <div className="mt-6 text-center text-sm text-gray-500">
               Chưa có tài khoản?{' '}
-              <a href="#" onClick={(e) => { e.preventDefault(); onRegisterClick(); }} className="text-blue-600 hover:text-blue-500 font-medium">Đăng ký ngay</a>
+              <button 
+                type="button"
+                onClick={onRegisterClick}
+                className="text-blue-600 hover:text-blue-500 font-medium"
+              >
+                Đăng ký ngay
+              </button>
             </div>
           </form>
         </div>

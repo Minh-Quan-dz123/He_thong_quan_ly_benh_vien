@@ -38,7 +38,10 @@ const QuickAccess = ({ isLoggedIn, onSignInClick }: QuickAccessProps) => {
             </div>
           </Link>
         ) : (
-          <div onClick={onSignInClick} className="flex items-center space-x-4 p-2 hover:bg-blue-50 transition-colors rounded-lg cursor-pointer group">
+          <button 
+            onClick={onSignInClick}
+            className="flex items-center space-x-4 p-2 hover:bg-blue-50 transition-colors rounded-lg cursor-pointer group w-full text-left"
+          >
             <div className="flex-shrink-0 p-3 bg-blue-100 rounded-full group-hover:bg-blue-200 transition-colors">
               <svg className="h-6 w-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -48,7 +51,7 @@ const QuickAccess = ({ isLoggedIn, onSignInClick }: QuickAccessProps) => {
               <h3 className="text-base font-bold text-gray-900 group-hover:text-blue-700">Đặt lịch khám</h3>
               <p className="text-gray-500 text-xs mt-0.5">Đặt lịch nhanh chóng</p>
             </div>
-          </div>
+          </button>
         )}
 
         {/* Item 3: Kết quả xét nghiệm */}

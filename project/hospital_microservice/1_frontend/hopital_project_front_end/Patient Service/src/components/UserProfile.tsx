@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+const DOCTOR_API_BASE_URL = import.meta.env.VITE_DOCTOR_API_BASE_URL || (API_BASE_URL.includes(':8000') ? API_BASE_URL.replace(':8000', ':8001') : API_BASE_URL);
 
 interface UserProfileProps {
   role?: 'patient' | 'doctor' | null;
@@ -17,6 +18,8 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
     gender: '',
     phone: '',
     address: '',
+    documentType: '',
+    documentNumber: '',
     bloodType: '',
     height: '',
     weight: '',
@@ -28,7 +31,9 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
     if (currentUser && currentUser.id) {
       const fetchUserData = async () => {
         try {
-          const response = await fetch(`${API_BASE_URL}/patients/${currentUser.id}`);
+          const base = role === 'doctor' ? DOCTOR_API_BASE_URL : API_BASE_URL;
+          const path = role === 'doctor' ? 'doctors' : 'patients';
+          const response = await fetch(`${base}/${path}/${currentUser.id}`);
           if (response.ok) {
             const data = await response.json();
             setUser({
@@ -38,11 +43,13 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
               gender: data.gender,
               phone: data.phone,
               address: data.address,
+              documentType: data.documentType || '',
+              documentNumber: data.documentNumber || '',
               bloodType: data.bloodType || '',
               height: data.height || '',
               weight: data.weight || '',
               allergies: data.allergies || '',
-              department: 'General'
+              department: data.specialty || 'General'
             });
           }
         } catch (error) {
@@ -67,7 +74,9 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
 
   const handleSave = async () => {
     try {
-      const response = await fetch(`${API_BASE_URL}/patients/${user.id}`, {
+      const base = role === 'doctor' ? DOCTOR_API_BASE_URL : API_BASE_URL;
+      const path = role === 'doctor' ? 'doctors' : 'patients';
+      const response = await fetch(`${base}/${path}/${user.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -81,7 +90,8 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
           bloodType: tempUser.bloodType,
           height: tempUser.height,
           weight: tempUser.weight,
-          allergies: tempUser.allergies
+          allergies: tempUser.allergies,
+          ...(role === 'doctor' ? { specialty: tempUser.department } : {})
         }),
       });
 
@@ -98,6 +108,7 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
           height: updatedUser.height || '',
           weight: updatedUser.weight || '',
           allergies: updatedUser.allergies || '',
+          department: updatedUser.specialty || user.department
         });
         setIsEditing(false);
         showSuccessToast("Cập nhật thành công!", "Thông tin hồ sơ của bạn đã được lưu.");
@@ -245,6 +256,28 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
                     className="w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm border p-2"
                   />
                 ) : user.address}
+              </dd>
+            </div>
+            <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500 self-center">Loại giấy tờ</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                <input
+                  type="text"
+                  value={user.documentType || '-'}
+                  disabled
+                  className="w-full border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-500 sm:text-sm border p-2 cursor-not-allowed"
+                />
+              </dd>
+            </div>
+            <div className="bg-white px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
+              <dt className="text-sm font-medium text-gray-500 self-center">Số giấy tờ</dt>
+              <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
+                <input
+                  type="text"
+                  value={user.documentNumber || '-'}
+                  disabled
+                  className="w-full border-gray-300 rounded-md shadow-sm bg-gray-100 text-gray-500 sm:text-sm border p-2 cursor-not-allowed"
+                />
               </dd>
             </div>
             {role === 'doctor' && (

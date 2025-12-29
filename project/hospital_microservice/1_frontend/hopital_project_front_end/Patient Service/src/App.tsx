@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Routes, Route, Navigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
 import Doctors from './components/Doctors';
@@ -30,6 +30,40 @@ function App() {
   const [showToast, setShowToast] = useState(false);
   const [toastMessage, setToastMessage] = useState({ title: '', message: '', type: 'success' as 'success' | 'error' });
 
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  // Restore session on mount
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    if (savedUser) {
+      try {
+        const user = JSON.parse(savedUser);
+        setIsLoggedIn(true);
+        setCurrentUser(user);
+        setUserRole(user.role || 'patient');
+      } catch (e) {
+        console.error("Failed to parse saved user", e);
+        localStorage.removeItem('user');
+      }
+    }
+  }, []);
+
+  // Sync URL with Modal state
+  useEffect(() => {
+    const path = location.pathname;
+    setIsSignInOpen(path === '/login');
+    setIsRegisterOpen(path === '/register');
+    setIsForgotPasswordOpen(path === '/forgot-password');
+  }, [location.pathname]);
+
+  const handleCloseModals = () => {
+    // If we are on a modal route, go back to home or previous page
+    if (['/login', '/register', '/forgot-password'].includes(location.pathname)) {
+      navigate('/');
+    }
+  };
+
   const showToastMsg = (title: string, message: string, type: 'success' | 'error' = 'success') => {
     setToastMessage({ title, message, type });
     setShowToast(true);
@@ -44,6 +78,7 @@ function App() {
     setIsLoggedIn(true);
     setCurrentUser(user);
     setUserRole(role);
+    localStorage.setItem('user', JSON.stringify(user));
   };
 
   const handleRegister = async (userData: any) => {
@@ -62,8 +97,7 @@ function App() {
         
         // Smooth transition: Wait a bit before switching modals
         setTimeout(() => {
-          setIsRegisterOpen(false);
-          setIsSignInOpen(true);
+          navigate('/login');
         }, 500);
         
         return data;
@@ -81,6 +115,7 @@ function App() {
     setIsLoggedIn(false);
     setCurrentUser(null);
     setUserRole(null);
+    localStorage.removeItem('user');
   };
 
   return (
@@ -119,7 +154,7 @@ function App() {
       )}
 
       <Navbar 
-        onSignInClick={() => setIsSignInOpen(true)}
+        onSignInClick={() => navigate('/login')}
         isLoggedIn={isLoggedIn}
         username={currentUser?.name || ''}
         role={userRole}
@@ -130,7 +165,34 @@ function App() {
         <Route path="/" element={
           <>
             <Hero />
-            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => setIsSignInOpen(true)} />
+            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} />
+            <WhyChooseUs />
+            <Doctors />
+            <Contact />
+          </>
+        } />
+        <Route path="/login" element={
+          <>
+            <Hero />
+            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} />
+            <WhyChooseUs />
+            <Doctors />
+            <Contact />
+          </>
+        } />
+        <Route path="/register" element={
+          <>
+            <Hero />
+            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} />
+            <WhyChooseUs />
+            <Doctors />
+            <Contact />
+          </>
+        } />
+        <Route path="/forgot-password" element={
+          <>
+            <Hero />
+            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} />
             <WhyChooseUs />
             <Doctors />
             <Contact />
@@ -140,72 +202,60 @@ function App() {
           isLoggedIn ? (
             <UserProfile role={userRole} currentUser={currentUser} showSuccessToast={showSuccessToast} />
           ) : (
-            <Navigate to="/" replace />
+            <Navigate to="/login" replace />
           )
         } />
         <Route path="/records" element={
           isLoggedIn && userRole !== 'doctor' ? (
             <MedicalRecords />
           ) : (
-            <Navigate to="/" replace />
+            <Navigate to="/login" replace />
           )
         } />
         <Route path="/appointment" element={
           isLoggedIn ? (
             <Appointment currentUser={currentUser} />
           ) : (
-            <Navigate to="/" replace />
+            <Navigate to="/login" replace />
           )
         } />
         <Route path="/appointments-list" element={
           isLoggedIn ? (
             <AppointmentList currentUser={currentUser} showToastMsg={showToastMsg} />
           ) : (
-            <Navigate to="/" replace />
+            <Navigate to="/login" replace />
           )
         } />
         <Route path="/patients" element={
           isLoggedIn && userRole === 'doctor' ? (
             <DoctorPatients />
           ) : (
-            <Navigate to="/" replace />
+            <Navigate to="/login" replace />
           )
         } />
         <Route path="/news" element={<News />} />
-        <Route path="/specialties/:id" element={<Specialties isLoggedIn={isLoggedIn} onSignInClick={() => setIsSignInOpen(true)} />} />
+        <Route path="/specialties/:id" element={<Specialties isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} />} />
         <Route path="/guide/:section" element={<PatientGuide />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
 
       <SignIn 
         isOpen={isSignInOpen} 
-        onClose={() => setIsSignInOpen(false)}
+        onClose={handleCloseModals}
         onLogin={handleLogin}
-        onRegisterClick={() => {
-          setIsSignInOpen(false);
-          setIsRegisterOpen(true);
-        }}
-        onForgotPasswordClick={() => {
-          setIsSignInOpen(false);
-          setIsForgotPasswordOpen(true);
-        }}
+        onRegisterClick={() => navigate('/register')}
+        onForgotPasswordClick={() => navigate('/forgot-password')}
       />
       <Register
         isOpen={isRegisterOpen}
-        onClose={() => setIsRegisterOpen(false)}
+        onClose={handleCloseModals}
         onRegister={handleRegister}
-        onSignInClick={() => {
-          setIsRegisterOpen(false);
-          setIsSignInOpen(true);
-        }}
+        onSignInClick={() => navigate('/login')}
       />
       <ForgotPassword
         isOpen={isForgotPasswordOpen}
-        onClose={() => setIsForgotPasswordOpen(false)}
-        onBackToLogin={() => {
-          setIsForgotPasswordOpen(false);
-          setIsSignInOpen(true);
-        }}
+        onClose={handleCloseModals}
+        onBackToLogin={() => navigate('/login')}
       />
     </div>
   );

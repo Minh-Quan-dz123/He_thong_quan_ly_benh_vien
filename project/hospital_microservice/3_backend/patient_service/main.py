@@ -2,15 +2,20 @@ from fastapi import FastAPI, HTTPException, status, Request
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
-from database import db
+from database import db, MONGO_URI
+import certifi
+from pymongo import MongoClient
+DOCTOR_DB_NAME = "hospital_doctors_db"
 from schemas import UserRegister, UserResponse, UserLogin, OTPRequest, OTPVerify, ResetPassword, UserDetailResponse, UserUpdate, AppointmentCreate, AppointmentResponse
-from utils import get_password_hash, hash_document_number, encrypt_document_number, verify_password
+from utils import get_password_hash, hash_document_number, encrypt_document_number, decrypt_document_number, verify_password
 # from sms_service import send_sms
 from pymongo.errors import DuplicateKeyError
 from bson import ObjectId
 from typing import List, Optional
 import random
 from mangum import Mangum
+from datetime import datetime
+from schemas import MedicalRecordCreate, MedicalRecordResponse
 
 app = FastAPI(title="Patient Service API")
 
@@ -57,18 +62,26 @@ async def register(user: UserRegister):
     if not user.documentNumber.isdigit():
         raise HTTPException(status_code=400, detail="Document number must contain only digits")
 
-    # Check if username exists
-    if db.get_db().patients.find_one({"username": user.username}):
-        raise HTTPException(status_code=400, detail="Username already exists")
-
-    # Check if phone exists
-    if db.get_db().patients.find_one({"phone": user.phone}):
-        raise HTTPException(status_code=400, detail="Phone number already exists")
-
-    # Check if document number exists (using hash)
+    # Check uniqueness within respective databases
     doc_hash = hash_document_number(user.documentNumber)
-    if db.get_db().patients.find_one({"document_number_hash": doc_hash}):
-        raise HTTPException(status_code=400, detail="Document number already registered")
+    if getattr(user, 'role', 'patient') == 'doctor':
+        # check in doctors DB only
+        doctor_client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
+        doctor_db = doctor_client[DOCTOR_DB_NAME]
+        if doctor_db.doctors.find_one({"username": user.username}):
+            raise HTTPException(status_code=400, detail="Username already exists")
+        if doctor_db.doctors.find_one({"phone": user.phone}):
+            raise HTTPException(status_code=400, detail="Phone number already exists")
+        if doctor_db.doctors.find_one({"document_number_hash": doc_hash}):
+            raise HTTPException(status_code=400, detail="Document number already registered")
+    else:
+        # patient checks only in patients DB
+        if db.get_db().patients.find_one({"username": user.username}):
+            raise HTTPException(status_code=400, detail="Username already exists")
+        if db.get_db().patients.find_one({"phone": user.phone}):
+            raise HTTPException(status_code=400, detail="Phone number already exists")
+        if db.get_db().patients.find_one({"document_number_hash": doc_hash}):
+            raise HTTPException(status_code=400, detail="Document number already registered")
 
     # Prepare user data for storage
     user_dict = user.dict()
@@ -82,11 +95,18 @@ async def register(user: UserRegister):
     user_dict['document_number_hash'] = doc_hash
     user_dict['document_number_encrypted'] = encrypt_document_number(user.documentNumber)
     
-    # Insert into MongoDB
+    # Insert into MongoDB (patients or doctors depending on role)
     try:
-        new_user = db.get_db().patients.insert_one(user_dict)
-        created_user = db.get_db().patients.find_one({"_id": new_user.inserted_id})
-        
+        if getattr(user, 'role', 'patient') == 'doctor':
+            # insert into doctor DB
+            doctor_client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
+            doctor_db = doctor_client[DOCTOR_DB_NAME]
+            new_user = doctor_db.doctors.insert_one(user_dict)
+            created_user = doctor_db.doctors.find_one({"_id": new_user.inserted_id})
+        else:
+            new_user = db.get_db().patients.insert_one(user_dict)
+            created_user = db.get_db().patients.find_one({"_id": new_user.inserted_id})
+
         return UserResponse(
             id=str(created_user["_id"]),
             username=created_user["username"],
@@ -101,24 +121,42 @@ async def register(user: UserRegister):
 
 @app.post("/login", response_model=UserResponse)
 async def login(user_login: UserLogin):
-    # Try to find by username
+    # Try to find user across patients and doctors by username
     user = db.get_db().patients.find_one({"username": user_login.identifier})
-    
-    # If not found by username, try by phone
+    role = 'patient'
+
+    if not user:
+        # look in separate doctor DB
+        doctor_client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
+        doctor_db = doctor_client[DOCTOR_DB_NAME]
+        user = doctor_db.doctors.find_one({"username": user_login.identifier})
+        role = 'doctor' if user else role
+        doctor_client.close()
+
+    # If not found by username, try by phone across both collections
     if not user:
         user = db.get_db().patients.find_one({"phone": user_login.identifier})
-    
+        role = 'patient' if user else role
+
+    if not user:
+        doctor_client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
+        doctor_db = doctor_client[DOCTOR_DB_NAME]
+        user = doctor_db.doctors.find_one({"phone": user_login.identifier})
+        role = 'doctor' if user else role
+        doctor_client.close()
+
     if not user:
         raise HTTPException(status_code=400, detail="Tên đăng nhập hoặc số điện thoại không tồn tại")
-        
+
     if not verify_password(user_login.password, user['password_hash']):
         raise HTTPException(status_code=400, detail="Mật khẩu không chính xác")
-        
+
     return UserResponse(
         id=str(user["_id"]),
         username=user["username"],
         name=user["name"],
-        phone=user["phone"]
+        phone=user["phone"],
+        role=role
     )
 
 # @app.post("/forgot-password/request-otp")
@@ -154,6 +192,9 @@ async def reset_password(request: ResetPassword):
     del otp_storage[request.phone]
     return {"message": "Đổi mật khẩu thành công"}
 
+
+
+
 @app.get("/patients/{user_id}", response_model=UserDetailResponse)
 async def get_patient_detail(user_id: str):
     try:
@@ -168,7 +209,8 @@ async def get_patient_detail(user_id: str):
             dob=user["dob"],
             gender=user["gender"],
             phone=user["phone"],
-            documentType=user["documentType"],
+                documentType=user["documentType"],
+                documentNumber=(lambda d: (d if len(d) <= 3 else ('*' * (len(d)-3) + d[-3:])))(decrypt_document_number(user.get('document_number_encrypted', ''))),
             address=user["address"],
             bloodType=user.get("bloodType"),
             height=user.get("height"),
@@ -212,6 +254,7 @@ async def update_patient(user_id: str, user_update: UserUpdate):
             gender=updated_user["gender"],
             phone=updated_user["phone"],
             documentType=updated_user["documentType"],
+            documentNumber=(lambda d: (d if len(d) <= 3 else ('*' * (len(d)-3) + d[-3:])))(decrypt_document_number(updated_user.get('document_number_encrypted', ''))),
             address=updated_user["address"],
             bloodType=updated_user.get("bloodType"),
             height=updated_user.get("height"),
@@ -236,6 +279,7 @@ async def get_all_patients():
         ))
     return patients
 
+
 @app.delete("/patients", status_code=status.HTTP_204_NO_CONTENT)
 async def delete_all_patients():
     try:
@@ -244,6 +288,28 @@ async def delete_all_patients():
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+
+@app.get("/patients/{patient_id}/medical_records", response_model=List[MedicalRecordResponse])
+async def get_medical_records(patient_id: str):
+    try:
+        patient = db.get_db().patients.find_one({"_id": ObjectId(patient_id)})
+        if not patient:
+            raise HTTPException(status_code=404, detail="Patient not found")
+        
+        records = patient.get("medical_records", [])
+        return [MedicalRecordResponse(
+            id=r.get('_id'),
+            diagnosis=r.get('diagnosis'),
+            medications=r.get('medications'),
+            instructions=r.get('instructions'),
+            follow_up_date=r.get('follow_up_date'),
+            created_at=r.get('created_at'),
+            doctor_name=r.get('doctor_name'),
+            doctor_specialty=r.get('doctor_specialty'),
+            edit_history=r.get('edit_history', [])
+        ) for r in records]
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
 @app.post("/appointments", response_model=AppointmentResponse, status_code=status.HTTP_201_CREATED)
 async def create_appointment(appointment: AppointmentCreate):
     appointment_dict = appointment.dict()
