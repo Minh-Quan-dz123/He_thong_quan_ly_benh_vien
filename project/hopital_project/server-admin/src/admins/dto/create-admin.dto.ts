@@ -1,4 +1,4 @@
-import {IsString, IsEmail, MinLength,IsNotEmpty} from 'class-validator'
+import {IsString, IsEmail, MinLength,IsNotEmpty, Matches} from 'class-validator'
 
 export class CreateAdminDto{
 
@@ -17,5 +17,6 @@ export class CreateAdminDto{
 
     @IsNotEmpty()
     @IsString()
+    @Matches(/^[0-9]{10}$/, { message: 'Phone must be 10 digits' })
     phone:string;
 }

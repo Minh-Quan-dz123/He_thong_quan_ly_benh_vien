@@ -1,0 +1,55 @@
+.departmentRoot {
+  width: 100%;
+  height: 100vh;
+  background-color: #f4f6f9;
+  display: flex;
+  flex-direction: column;
+}
+
+/*top bar */
+.topBar {
+  height: 64px;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e5e7eb;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  padding: 0 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.topLeft h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: #2563eb;
+}
+
+.topCenter {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+
+/* body */
+.body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+/* nội dung */
+.content {
+  flex: 1;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+/* card style cho nội dung */
+.content > * {
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 20px;
+  min-height: calc(100vh - 140px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+}

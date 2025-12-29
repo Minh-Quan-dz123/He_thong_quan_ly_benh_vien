@@ -1,202 +1,152 @@
-import { useState} from "react";
-import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 import styles from "./createPatient.module.css";
-import LeftMenu from "../../../components/patient/LeftMenuPatient";
 
 export default function CreatePatient() {
-    const navigate = useNavigate();
-
-    // 1 state object duy nhất cho patient
+    // 1 khai báo state
+    // 1.1 patient
     const [patient, setPatient] = useState({
-
-        gender: "",
-        birthDate: "",
         name: "",
+        birthDate: "",
+        gender: "",
         cccd: "",
-
         address: "",
         phone: "",
         email: "",
-
         insuranceNumber: "",
         status: "Active",
-
         account: "",
         password: ""
     });
 
+    // 1.2 có đang load hay o
     const [loading, setLoading] = useState(false);
 
+    // 2 khai báo hàm
 
+    // 2.1 thay đổi dữ liệu trong patient
+    const handleChange = (field, value) => {
+        setPatient({ ...patient, [field]: value });
+    };
 
-    // 2 submit
+    // 2.2 gọi api tạo patient mới
     const handleSubmit = async () => {
-        // kiểm tra các trường bắt buộc
-        const requiredFields = [
-            "name",
-            "birthDate",
-            "gender",
-            "cccd",
-            "phone",
-            "account",
-            "password"
-        ];
+        // các trường bắt buộc
+        const requiredFields = ["name", "birthDate", "gender", "cccd", "phone", "account", "password"];
+
+        // kiểm tra
         for (let field of requiredFields) 
         {
             if (!patient[field]) 
             {
-                alert(`Please fill the required field: ${field}`);
+                alert(`Vui lòng điền trường bắt buộc: ${field}`);
                 return;
             }
         }
-
+    
+        // set bằng true và giả lập đợi
         setLoading(true);
-
+        // ======== gọi api ====
         try {
-            // TODO: Gửi API thực tế
-            /*
-            const res = await fetch("http://localhost:8080/api/patients", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(patient),
-            });
-            if (!res.ok) throw new Error("Create failed");
-            const result = await res.json();
-            */
-
-            await new Promise((resolve) => setTimeout(resolve, 1000)); // giả lập
-
+            await new Promise((resolve) => setTimeout(resolve, 500)); // giả lập API
             setLoading(false);
-            alert("patien created successfully!");
-
-
+            alert("Tạo bệnh nhân thành công!");
         } 
-        catch (err) 
-        {
+        catch (err) {
             console.error(err);
             setLoading(false);
         }
     };
 
-    
-
-    // 3 helper để update field
-    const handleChange = (field, value) => {
-        setPatient({ ...patient, [field]: value });
-    };
-
   return (
     <div className={styles.pageContainer}>
-        {/*trên*/}
-        <div className={styles.divTop}>
-            <button className={styles.backButton} onClick={() => navigate(-1)}>⬅ Back</button>
-            <h2 className={styles.titleh2}>Create New Patient</h2>
+        {/* 1 header */}
+        <div className={styles.header}>
+            <h2>Thêm bệnh nhân mới</h2>
         </div>
 
-        {/* dưới */}
-        <div className={styles.duoi}>
+        {/* 2 form */}
+        <div className={styles.formContainer}>
+            {/* 2.1 section: Thông tin định danh */}
+            <div className={styles.section}>
+                {/* 2.1.1 header */}
+                <h3>Thông tin định danh</h3>
 
-            <div className={styles.left}>
-            <LeftMenu/>
+                {/* 2.1.2 các div nhập dữ liệu */}
+                <div className={styles.fieldGroup}>
+                    <label>Họ tên*</label>
+                    <input type="text" value={patient.name} onChange={(e) => handleChange("name", e.target.value)} />
+                </div>
+                <div className={styles.fieldGroup}>
+                    <label>Ngày sinh*</label>
+                    <input type="date" value={patient.birthDate} onChange={(e) => handleChange("birthDate", e.target.value)} />
+                </div>
+                <div className={styles.fieldGroup}>
+                    <label>Giới tính*</label>
+                    <select value={patient.gender} onChange={(e) => handleChange("gender", e.target.value)}>
+                    <option value="">Chọn giới tính</option>
+                    <option value="Male">Nam</option>
+                    <option value="Female">Nữ</option>
+                    <option value="Other">Khác</option>
+                    </select>
+                </div>
+                <div className={styles.fieldGroup}>
+                    <label>CCCD*</label>
+                    <input type="text" value={patient.cccd} onChange={(e) => handleChange("cccd", e.target.value)} />
+                </div>
             </div>
 
-            <div className={styles.divBottom}>
-                <div className={styles.formGroup}>
-                    {/*thông tin định danh*/}
-                    <div className = {styles.con}>
-                        <h3>Identification</h3>
-
-                        <label>
-                        Name*:
-                        <input required type="text" value={patient.name} onChange={(e) => handleChange("name", e.target.value)} />
-                        </label>
-
-                        <label>
-                        Birth Date*:
-                        <input required type="date" value={patient.birthDate} onChange={(e) => handleChange("birthDate", e.target.value)} />
-                        </label>
-
-                        <label>
-                        Gender*:
-                        <select required value={patient.gender} onChange={(e) => handleChange("gender", e.target.value)}>
-                            <option value="">Select Gender</option>
-                            <option value="Male">Male</option>
-                            <option value="Female">Female</option>
-                            <option value="Other">Other</option>
-                        </select>
-                        </label>
-
-                        <label>
-                        CCCD*:
-                        <input required type="text" value={patient.cccd} onChange={(e) => handleChange("cccd", e.target.value)} />
-                        </label>
-                    </div>
-                    
-                    {/* thông tin liên lạc */}
-                    <div className={styles.con}>
-                        <h3>Contact</h3>
-
-                        <label>
-                        Address:
-                        <input type="text" value={patient.address} onChange={(e) => handleChange("address", e.target.value)} />
-                        </label>
-
-                        <label>
-                        Phone*:
-                        <input required type="text" value={patient.phone} onChange={(e) => handleChange("phone", e.target.value)} />
-                        </label>
-
-                        <label>
-                        Email:
-                        <input type="email" value={patient.email} onChange={(e) => handleChange("email", e.target.value)} />
-                        </label>
-
-                    </div>
+            {/* 2.2 section: Thông tin liên hệ */}
+            <div className={styles.section}>
+                <h3>Thông tin liên hệ</h3>
+                <div className={styles.fieldGroup}>
+                    <label>Địa chỉ</label>
+                    <input type="text" value={patient.address} onChange={(e) => handleChange("address", e.target.value)} />
                 </div>
-
-                <div className={styles.formGroup}>
-                    {/* thông tin khác */}
-                    <div className={styles.con}>
-                        <h3>Other</h3>
-
-                        <label>
-                        Insurance_number:
-                        <input type="text" value={patient.insuranceNumber} onChange={(e) => handleChange("insuranceNumber", e.target.value)} />
-                        </label>
-                        
-                        <label>
-                        Status:
-                        <select value={patient.status} onChange={(e) => handleChange("status", e.target.value)}>
-                            <option value="Active">Active</option>
-                            <option value="Discharge">On leave</option>
-                            <option value="Deceased">Retired</option>
-                        </select>
-                        </label>
-                    </div>
-
-                    <div className={styles.con}>
-                        <h3>Account</h3>
-
-                        <label>
-                        Account*:
-                        <input required type="text" value={patient.account} onChange={(e) => handleChange("account", e.target.value)} />
-                        </label>
-                        
-                        <label>
-                        Password*:
-                        <input required type="text" value={patient.password} onChange={(e) => handleChange("password", e.target.value)} />
-                        </label>
-
-                    </div>
-                    
-
-                    <div className={styles.buttonGroup}>
-                        <button onClick={handleSubmit} disabled={loading}>
-                            {loading ? "Creating..." : "Submit"}
-                        </button>
-                    </div>
-
+                <div className={styles.fieldGroup}>
+                    <label>Số điện thoại*</label>
+                    <input type="text" value={patient.phone} onChange={(e) => handleChange("phone", e.target.value)} />
                 </div>
+                <div className={styles.fieldGroup}>
+                    <label>Email</label>
+                    <input type="email" value={patient.email} onChange={(e) => handleChange("email", e.target.value)} />
+                </div>
+            </div>
+
+            {/* 2.3 section: Thông tin khác */}
+            <div className={styles.section}>
+                <h3>Thông tin khác</h3>
+                <div className={styles.fieldGroup}>
+                    <label>Số bảo hiểm y tế</label>
+                    <input type="text" value={patient.insuranceNumber} onChange={(e) => handleChange("insuranceNumber", e.target.value)} />
+                </div>
+                <div className={styles.fieldGroup}>
+                    <label>Trạng thái</label>
+                    <select value={patient.status} onChange={(e) => handleChange("status", e.target.value)}>
+                    <option value="Active">Đang điều trị</option>
+                    <option value="Discharge">Đã xuất viện</option>
+                    <option value="Deceased">Đã tử vong</option>
+                    </select>
+                </div>
+            </div>
+
+            {/* 2.4 section: Thông tin tài khoản */}
+            <div className={styles.section}>
+                <h3>Thông tin tài khoản</h3>
+                <div className={styles.fieldGroup}>
+                    <label>Tài khoản*</label>
+                    <input type="text" value={patient.account} onChange={(e) => handleChange("account", e.target.value)} />
+                </div>
+                <div className={styles.fieldGroup}>
+                    <label>Mật khẩu*</label>
+                    <input type="text" value={patient.password} onChange={(e) => handleChange("password", e.target.value)} />
+                </div>
+            </div>
+
+            {/* 5 nút submit với disabled dựa vào loading */}
+            <div className={styles.submitContainer}>
+            <button onClick={handleSubmit} disabled={loading}> 
+                {loading ? "Đang tạo..." : "Tạo bệnh nhân"}
+            </button>
             </div>
         </div>
     </div>

@@ -1,190 +1,111 @@
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
-}
-/* managerDoctors.module.css */
-
-/* Container tổng */
 .container {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    display: flex;
-    flex-direction: column;
-
+  padding: 20px;
+  background-color: #f8fafc;
+  min-height: 100vh;
+  font-family: Arial, sans-serif;
 }
 
-.left
-{
-    padding: 0;
-    margin-right: 20px;
-    max-width: 25%;
+.pageTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1d4ed8;
+  margin-bottom: 20px;
 }
 
-.divTop{
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
+.filters {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
 }
 
-/* Header */
-.backButton {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100px;
-    margin-left: 30px;
+.filterRow {
+  display: flex;
+  gap: 10px;
 }
 
-.backButton:hover { 
-    background-color: #45a049;
+.filterRow input,
+.filterRow select {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  outline: none;
+  font-size: 14px;
 }
 
-/* title*/
-
-.tilteListDoctors {
-    width: 100%;
-    text-align: center;
+.filterRow input:focus,
+.filterRow select:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 5px rgba(37, 99, 235, 0.3);
 }
 
-/*---dưới---*/
-.divBottom
-{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    align-items: center;
+.tableWrapper {
+  overflow-x: auto;
+  background: #ffffff;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0,0,0,0.05);
 }
 
-.right
-{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px;
+.doctorTable {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-/* Input */
-
-/* Search filters */
-.searchFilters {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    margin-top: 10px;
-    width: 100%;
-    
+.doctorTable th,
+.doctorTable td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.searchFilters1 {
-    margin-left: 8%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 0px;
-    width: 20%;
-    
+.doctorTable th {
+  background-color: #2563eb;
+  color: white;
+  font-weight: 600;
 }
 
-.searchFilters2 {
-    margin-left: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 0px;
-    width: 20%;
-
+.doctorTable tr:hover {
+  background-color: #f1f5f9;
 }
 
-.searchFilters input {
-    padding: 6px 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 93%;
-}
-.searchFilters select {
-    padding: 6px 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 100%;
+.deleteBtn {
+  padding: 6px 10px;
+  border: none;
+  background-color: #ef4444;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
-
-/* Table */
-.tableDoctorInHopital
-{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-left: 8%;
-    padding-right: 8%;
-    width: 90%;
-}
-.titleTableDoctorInHopital
-{
-    margin-top: 50px;
-    width: 100%;
-    text-align: center;
+.deleteBtn:hover {
+  background-color: #dc2626;
 }
 
-.tableDoctorInHopital table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.tableDoctorInHopital th, .tableDoctorInHopital td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.tableDoctorInHopital th {
-    background-color: #4caf50;
-    color: white;
-}
-
-.tableDoctorInHopital tr:hover {
-    background-color: #f1f1f1;
-}
-
-.editBtn {
-    background-color: #ff5722;
-    color: white;
-    border: none;
-    padding: 5px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.editBtn:hover {
-    background-color: #e64a19;
-}
-
-/* Pagination */
 .pagination {
-    margin-top: 15px;
-    text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  gap: 10px;
 }
 
 .pagination button {
-    margin: 0 5px;
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    cursor: pointer;
+  padding: 6px 12px;
+  border: none;
+  background-color: #2563eb;
+  color: white;
+  border-radius: 6px;
+  cursor: pointer;
 }
 
 .pagination button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: 600;
+  color: #1e40af;
 }

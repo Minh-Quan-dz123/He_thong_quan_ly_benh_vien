@@ -1,126 +1,75 @@
-import {useState, useEffect} from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 import styles from "./ManageDepartment.module.css";
 import TableDepartmentsList from "../../../components/department/tableDepartmentList";
-import LeftMenu from "../../../components/department/LeftMenuDepartmentInfor";
-export default function ManageDepartment()
-{
-    // Trang quản lý khoa gồm phần tìm kiếm khoa theo tên
-    // bản danh sách khoa
-    // 1. khai báo state
-    const[departments, setDepartments] = useState([]);
-    const[search,setSearch] = useState("");
-    const[loading, setLoading] = useState(true);
-    const[error, setError] = useState(null)
 
-    const navigate = useNavigate();
+export default function ManageDepartment({ onSelectDepartment }) {
+  const [departments, setDepartments] = useState([]);
+  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-    // 2. hàm gọi API lấy danh sách khoa từ server
-    const fetchDepartments = async()=>{
-        setLoading(true);
-        setError(true); // ko lỗi
-        //dùng trong lúc đợi kết quả từ server (giả định 1.5 giây) thì hiển thị loading
-        const token = localStorage.getItem("token");
-        try
-        {
-            // giả lập server xử lý 1.5 giây dùng setTimeout
-            await new Promise((resolve) => setTimeout (resolve, 1500));
-            
-            const res = await fetch("http://127.0.0.1:3000/departments",{
-                method : "GET",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": `Bearer ${token}`,// token
-                }
-            });
+  const fetchDepartments = async () => {
+    setLoading(true);
+    setError(null);
+    const token = localStorage.getItem("token");
 
-            // kiểm tra kết quả trả về
-            if(!res.ok)
-            {
-                setLoading(false);
-                let errMes = "lấy list department xịt: ";
-                try{
-                    const errData = await res.json();
-                    errMes = errData.message || errMes;
-                }
-                catch{}
-                console.error(errData.message);
-                return;  
-            }
+    try {
+      await new Promise((r) => setTimeout(r, 400));
 
-            setLoading(false);
-            // nếu oke thì đọc dữ liệu
-            const data = await res.json();
-            setDepartments(data);
-            console.log("department list đã nhận: ");
-            console.log(data);
-        }
-        catch (err){
-            console.error("Lỗi khi lấy danh sách khoa", err);
-            setError(err.message)
-        }
-        finally
-        {
-            setLoading(false);
-        }
-    };
-    // 3. tự động gọi hàm fetchDepartments khi component được load lần đầu hoặc thay đổi
-    useEffect(() => {
-        fetchDepartments();
-    }, []);
+      const res = await fetch("http://127.0.0.1:3000/departments", {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
-    // 4. Hàm lọc theo từ khóa trong search
-    const filteredDepartments = departments.filter((dept) => 
-        dept.name.toLowerCase().includes(search.toLowerCase())
-    );
+      if (!res.ok) throw new Error("Không lấy được danh sách khoa");
 
-    // 5 render
-    //5.1 nếu đang loading UI 
+      const data = await res.json();
+      setDepartments(data);
+      localStorage.setItem("departmentsCache", JSON.stringify(data));
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-    return(
-        <div className = {styles.container}>
+  useEffect(() => {
+    fetchDepartments();
+  }, []);
 
-            {/* phần trên */}
-            <div className = {styles.divTop}>
-                <button 
-                className= {styles.backButton}
-                onClick = {()=> navigate(-1)}
-                >  
-                    ⬅ Back 
-                </button>
+  const filteredDepartments = departments.filter((d) =>
+    d.name.toLowerCase().includes(search.toLowerCase())
+  );
 
-                <h2 className = {styles.titleh2}> Quản Lý Khoa </h2>
+  return (
+    <div className={styles.manageDepartment}>
+      {/* 1 header */}
+      <div className={styles.manageDepartment__header}>
+        <h3 className={styles.manageDepartment__title}>Danh sách khoa</h3>
+        <input
+          className={styles.manageDepartment__searchInput}
+          placeholder="🔍 Tìm theo tên khoa"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
 
-            </div>
+      {/* 2 content */}
+      <div className={styles.manageDepartment__content}>
+        {loading && (
+          <p className={styles.manageDepartment__status}>Đang tải dữ liệu...</p>
+        )}
+        {error && <p className={styles.manageDepartment__error}>{error}</p>}
 
-            {/* phần dưới */}
-            <div className = {styles.divBottom}>
-                {/*left*/}
-                <div className = {styles.leftMenu}>
-                    <LeftMenu/>
-                </div>
-                
-
-                {/* right*/}
-                <div className={styles.tableRes}>
-                    {/*input search*/}
-                    <input
-                        className = {styles.searchInput}
-                        type = "text"
-                        placeholder="🔍 Search for Department Name"
-                        value = {search}
-                        onChange = {(e) => setSearch(e.target.value)}
-                        
-                    />
-                    {loading && <p>Loading...</p>}
-
-                    {!error && <p>Error....</p>}
-
-                    {!loading && error && (
-                        <TableDepartmentsList departments = {filteredDepartments}/>
-                    )}
-                </div>
-            </div>
-        </div>
-    );
+        {!loading && !error && (
+          <TableDepartmentsList
+            departments={filteredDepartments}
+            onSelect={onSelectDepartment}
+          />
+        )}
+      </div>
+    </div>
+  );
 }

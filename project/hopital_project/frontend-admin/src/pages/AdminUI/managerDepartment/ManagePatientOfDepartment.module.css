@@ -1,244 +1,164 @@
-html, body {
-    width: 100%;
-    margin: 0;
-    padding: 0;
+.managePatientDept {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  background: #f5f7fa;
+  padding: 16px 20px;
+  box-sizing: border-box;
 }
 
-/*root*/
-.container
-{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 650px;
+/* TOP */
+.managePatientDept__top {
+  background: #ffffff;
+  padding: 14px 20px;
+  border-radius: 8px;
+  margin-bottom: 16px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+  text-align: center;
 }
 
-/* trên */
-.divTop
-{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-    height: 130px;
+.managePatientDept__title {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 600;
+  color: #1f2937;
 }
 
-.divTop button
-{
-    background-color: #258fd6;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-
-    cursor: pointer;
-    margin-bottom: 0px;
-    width: 100px;
-    transition: all 0.3s ease; /* thêm transition mượt */ 
-    
-    margin-top:20px;
-    margin-left: 20px;
+/* BOTTOM */
+.managePatientDept__bottom {
+  display: flex;
+  flex-direction: column;
 }
 
-.divTop button:hover
-{
-    background-color: #1b6b9f;
+/* RIGHT CONTENT */
+.managePatientDept__right {
+  background: #ffffff;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.divTop h2
-{
-    margin-left: 90px;
-    width: 100%;
-    text-align: center;
+/* INPUT DEPARTMENT */
+.managePatientDept__input {
+  display: flex;
+  gap: 12px;
+  margin-bottom: 16px;
 }
 
-/*dưới*/
-/*left*/
-.divBottom
-{
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+.managePatientDept__input input {
+  width: 260px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
 }
 
-.leftMenu
-{
-    max-width: 25%;
+.managePatientDept__input button {
+  padding: 8px 18px;
+  border-radius: 6px;
+  border: none;
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  cursor: pointer;
 }
 
-/*right*/
-.rightResult
-{
-    width: 100%;
-    margin-top: 10px;
-    margin-left: 20px;
-    margin-right:10px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 400px;
+.managePatientDept__input button:hover {
+  background: #1d4ed8;
 }
 
-.divInput
-{
-    margin-top: 10px;
-    width: 90%;
-    display: flex;
-    justify-content: center;   /* canh giữa ngang */
-    
-}
-/* ô nhập ID */
-.divInput input {
-    padding: 10px 14px;
-    border: 1px solid #cfd8dc;
-    border-radius: 8px;
-    font-size: 15px;
-    width: 220px;
-    outline: none;
-    transition: all 0.25s ease;
+/* FILTERS */
+.managePatientDept__filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-bottom: 20px;
 }
 
-.divInput input:focus {
-    border-color: #4dabf7;
-    box-shadow: 0 0 5px rgba(36, 167, 255, 0.4);
+.managePatientDept__filters input,
+.managePatientDept__filters select {
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  font-size: 14px;
+  min-width: 200px;
 }
 
-/* nút Confirm */
-.divInput button {
-    padding: 10px 18px;
-    background-color: #4dabf7;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease;
-
-    margin-left: 10px;
+/* table */
+.managePatientDept__tableCard {
+  margin-top: 12px;
 }
 
-.searchFilters
-{
-    margin-top: 10px;
-    width: 90%;
-    margin-bottom: 20px;
-
-    display: flex;
-    justify-content: center;   /* canh giữa ngang */
-
+.managePatientDept__table {
+  width: 100%;
+  border-collapse: collapse;
+  color: #f5f7fa;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 6px;
+  overflow: hidden;
 }
 
-
-/* style chung cho input + select */
-.searchFilters input {
-    margin-left: 10px;
-    padding: 10px 14px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: 1px solid #cfd8dc;
-    background-color: #ffffff;
-    outline: none;
-    width: 120px;
-    transition: all 0.25s ease;
-}
-.searchFilters select{
-    padding: 10px 14px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: 1px solid #cfd8dc;
-    background-color: #ffffff;
-    outline: none;
-    width: 100px;
-    transition: all 0.25s ease;
+.managePatientDept__table th {
+  background: #1e3a8a;
+  padding: 12px 10px;
+  font-size: 14px;
+  font-weight: 600;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
 }
 
-
-.searchFilters input:hover,
-.searchFilters select:hover {
-    border-color: #90caf9;
+.managePatientDept__table td {
+  padding: 11px 10px;
+  font-size: 14px;
+  color: #1f2937;
+  border-bottom: 1px solid #e5e7eb;
+  text-align: center;
 }
 
-.searchFilters input:focus,
-.searchFilters select:focus {
-    border-color: #4dabf7;
-    box-shadow: 0 0 6px rgba(36, 167, 255, 0.4);
+.managePatientDept__table tbody tr:hover {
+  background: #f1f5f9;
 }
 
-
-.tablePatientInHopital
-{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-    width: 90%;
-    min-width: 700px;
-    max-width: 900px;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    min-height: 500px
+.managePatientDept__table tbody tr:last-child td {
+  border-bottom: none;
 }
 
-.tablePatientInHopital h2 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #1976d2;
+/* button xóa */
+.managePatientDept__deleteBtn {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  font-size: 16px;
 }
 
-.tablePatientInHopital table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 15px;
+.managePatientDept__deleteBtn:hover {
+  color: #dc2626;
 }
 
-.tablePatientInHopital th {
-    background-color: #1976d2;
-    color: white;
-    padding: 12px 10px;
-    text-align: left;
-    font-weight: 600;
+/* sang trang */
+.managePatientDept__pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  margin-top: 16px;
 }
 
-.tablePatientInHopital td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #e0e0e0;
+.managePatientDept__pagination button {
+  padding: 6px 12px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #ffffff;
+  cursor: pointer;
 }
 
-/* Hàng chẵn */
-.tablePatientInHopital tbody tr:nth-child(even) {
-    background-color: #f5faff;
+.managePatientDept__pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.tablePatientInHopital tbody tr:hover {
-    background-color: #e3f2fd !important;;
-    transition: 0.2s;
-}
-
-/* Căn giữa cột STT */
-.tablePatientInHopital td:first-child,
-.tablePatientInHopital th:first-child {
-    text-align: center;
-}
-
-.pagination {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 14px;
-}
-
-/*button xóa*/
-.deleteBtn
-{
-   background-color: #ff4d4f;   /* đỏ nhẹ */
-    border: none;
-    padding: 6px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: 0.3s;
+/* trạng thái */
+.managePatientDept__status {
+  color: #64748b;
 }

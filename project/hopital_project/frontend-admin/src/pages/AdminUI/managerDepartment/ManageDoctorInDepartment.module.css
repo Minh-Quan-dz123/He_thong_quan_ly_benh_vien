@@ -1,244 +1,127 @@
-html, body {
-    width: 100%;
-    margin: 0;
-    padding: 0;
+.manageDoctorDept {
+  background: #f8fafc;
+  padding: 20px;
+  border-radius: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
 }
 
-/*root*/
-.container
-{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 650px;
+/* header */
+.manageDoctorDept__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
-/* trên */
-.divTop
-{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 10px;
-    height: 130px;
+.manageDoctorDept__title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #0f172a;
 }
 
-.divTop button
-{
-    background-color: #258fd6;
-    color: white;
-    border: none;
-    padding: 8px 16px;
-    border-radius: 5px;
-
-    cursor: pointer;
-    margin-bottom: 0px;
-    width: 100px;
-    transition: all 0.3s ease; /* thêm transition mượt */ 
-    
-    margin-top:20px;
-    margin-left: 20px;
+.manageDoctorDept__departmentSearch {
+  display: flex;
+  gap: 8px;
 }
 
-.divTop button:hover
-{
-    background-color: #1b6b9f;
+.manageDoctorDept__departmentSearch input {
+  padding: 8px 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
 }
 
-.divTop h2
-{
-    margin-left: 90px;
-    width: 100%;
-    text-align: center;
+.manageDoctorDept__departmentSearch button {
+  background: #2563eb;
+  color: white;
+  border: none;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
 }
 
-/*dưới*/
-/*left*/
-.divBottom
-{
-    width: 100%;
-    display: flex;
-    flex-direction: row;
+.manageDoctorDept__departmentSearch button:hover {
+  background: #1d4ed8;
 }
 
-.leftMenu
-{
-    max-width: 25%;
+/* loc */
+.manageDoctorDept__filters {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
 }
 
-/*right*/
-.rightResult
-{
-    width: 100%;
-    margin-top: 10px;
-    margin-left: 20px;
-    margin-right:10px;
-
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 400px;
+.manageDoctorDept__filters input,
+.manageDoctorDept__filters select {
+  padding: 8px 10px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
 }
 
-.divInput
-{
-    margin-top: 10px;
-    width: 90%;
-    display: flex;
-    justify-content: center;   /* canh giữa ngang */
-    
-}
-/* ô nhập ID */
-.divInput input {
-    padding: 10px 14px;
-    border: 1px solid #cfd8dc;
-    border-radius: 8px;
-    font-size: 15px;
-    width: 220px;
-    outline: none;
-    transition: all 0.25s ease;
+/* table */
+.manageDoctorDept__tableCard {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
-.divInput input:focus {
-    border-color: #4dabf7;
-    box-shadow: 0 0 5px rgba(36, 167, 255, 0.4);
+.manageDoctorDept__table {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-/* nút Confirm */
-.divInput button {
-    padding: 10px 18px;
-    background-color: #4dabf7;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    font-size: 15px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.25s ease;
-
-    margin-left: 10px;
+.manageDoctorDept__table th {
+  background: #1e3a8a;
+  color: white;
+  padding: 12px;
+  font-size: 13px;
 }
 
-.searchFilters
-{
-    margin-top: 10px;
-    width: 98%;
-    margin-bottom: 20px;
-
-    display: flex;
-    justify-content: center;   /* canh giữa ngang */
-
+.manageDoctorDept__table td {
+  padding: 12px;
+  border-bottom: 1px solid #e5e7eb;
+  font-size: 14px;
 }
 
-
-/* style chung cho input + select */
-.searchFilters input {
-    margin-left: 10px;
-    padding: 10px 14px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: 1px solid #cfd8dc;
-    background-color: #ffffff;
-    outline: none;
-    width: 120px;
-    transition: all 0.25s ease;
-}
-.searchFilters select{
-    padding: 10px 14px;
-    font-size: 15px;
-    border-radius: 8px;
-    border: 1px solid #cfd8dc;
-    background-color: #ffffff;
-    outline: none;
-    width: 100px;
-    transition: all 0.25s ease;
+.manageDoctorDept__name {
+  font-weight: 600;
+  color: #1e40af;
 }
 
-
-.searchFilters input:hover,
-.searchFilters select:hover {
-    border-color: #90caf9;
+.manageDoctorDept__deleteBtn {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
 }
 
-.searchFilters input:focus,
-.searchFilters select:focus {
-    border-color: #4dabf7;
-    box-shadow: 0 0 6px rgba(36, 167, 255, 0.4);
+.manageDoctorDept__deleteBtn:hover {
+  color: #dc2626;
 }
 
-
-.tableDoctorInHopital
-{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-    width: 90%;
-    min-width: 700px;
-    max-width: 900px;
-    padding: 20px;
-    border-radius: 12px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-    min-height: 500px
+/* sang trang */
+.manageDoctorDept__pagination {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px;
 }
 
-.tableDoctorInHopital h2 {
-    text-align: center;
-    margin-bottom: 15px;
-    color: #1976d2;
+.manageDoctorDept__pagination button {
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid #cbd5e1;
+  background: white;
+  cursor: pointer;
 }
 
-.tableDoctorInHopital table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 15px;
+.manageDoctorDept__pagination button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
 }
 
-.tableDoctorInHopital th {
-    background-color: #1976d2;
-    color: white;
-    padding: 12px 10px;
-    text-align: left;
-    font-weight: 600;
-}
-
-.tableDoctorInHopital td {
-    padding: 10px 12px;
-    border-bottom: 1px solid #e0e0e0;
-}
-
-/* Hàng chẵn */
-.tableDoctorInHopital tbody tr:nth-child(even) {
-    background-color: #f5faff;
-}
-
-.tableDoctorInHopital tbody tr:hover {
-    background-color: #e3f2fd !important;;
-    transition: 0.2s;
-}
-
-/* Căn giữa cột STT */
-.tableDoctorInHopital td:first-child,
-.tableDoctorInHopital th:first-child {
-    text-align: center;
-}
-
-.pagination {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 14px;
-}
-
-/*button xóa*/
-.deleteBtn
-{
-   background-color: #ff4d4f;   /* đỏ nhẹ */
-    border: none;
-    padding: 6px 10px;
-    border-radius: 8px;
-    cursor: pointer;
-    font-size: 16px;
-    transition: 0.3s;
+.manageDoctorDept__status {
+  color: #64748b;
 }

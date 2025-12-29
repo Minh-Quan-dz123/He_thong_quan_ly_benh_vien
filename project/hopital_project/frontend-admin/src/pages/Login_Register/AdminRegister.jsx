@@ -88,65 +88,66 @@ export default function AdminRegister()
     // 4 thêm button quay lại trang trước
     const navigate = useNavigate();
 
-
     return (
         <div className = {styles.containerAdminRegister}>
-            <button  className = {styles.backButton} onClick = {() => navigate(-1)}> ⬅ Back </button>
-            <h2 className = {styles.header}>Đăng ký tài khoản admin quản lý bệnh viện</h2>
-            <form className = {styles.form} onSubmit = {handleSubmit}> {/* gọi hàm xử lý khi gửi form */}
-                <div>
-                    <label>Full Name:</label>
-                    <input
-                        name = "fullName"
-                        type = "text"
-                        value = {formdata.fullName}// liên kết giá trị với state
-                        onChange = {handleChange} // gọi hàm xử lý khi người dùng thay đổi dữ liệu
-                        required// bắt buộc phải nhập
-                        placeholder = "Nhập họ tên của bạn"
-                    />
-                </div>
-                
-                <div>
-                    <label>Email:</label>
-                    <input
-                        name = "email"
-                        type = "email"
-                        value = {formdata.email}
-                        onChange = {handleChange}
-                        required
-                        placeholder = "Nhập email của bạn"
-                    />
-                </div>
-                
-                <div>
-                    <label>Password:</label>
-                    <input
-                        name = "password"
-                        type = "password"
-                        value = {formdata.password}
-                        onChange = {handleChange}
-                        required
-                        placeholder = "Nhập mật khẩu của bạn"
-                    />
-                </div>
-                
-                <div>
-                    <label>Phone:</label>
-                    <input
-                        name = "phone"
-                        type = "text"
-                        value = {formdata.phone}
-                        onChange = {handleChange}
-                        required
-                        placeholder = "Nhập số điện thoại của bạn"
-                    />
-                </div>
-        
-                <button className = {styles.submitButton} type = "submit"> Submit </button>
+            <button  className = {styles.backButton} onClick = {() => navigate(-1)}> ⬅ Quay lại </button>
 
-            </form>
+            <div className={styles.formCard}>
+                <h2 className = {styles.header}>Đăng ký tài khoản quản lý bệnh viện</h2>
+                <form className = {styles.form} onSubmit = {handleSubmit}> {/* gọi hàm xử lý khi gửi form */}
+                    <div>
+                        <label>Họ và Tên:</label>
+                        <input
+                            name = "fullName"
+                            type = "text"
+                            value = {formdata.fullName}// liên kết giá trị với state
+                            onChange = {handleChange} // gọi hàm xử lý khi người dùng thay đổi dữ liệu
+                            required// bắt buộc phải nhập
+                            placeholder = "Nhập họ tên của bạn"
+                        />
+                    </div>
+                    
+                    <div>
+                        <label>Email:</label>
+                        <input
+                            name = "email"
+                            type = "email"
+                            value = {formdata.email}
+                            onChange = {handleChange}
+                            required
+                            placeholder = "Nhập email của bạn"
+                        />
+                    </div>
+                    
+                    <div>
+                        <label>Mật Khẩu:</label>
+                        <input
+                            name = "password"
+                            type = "password"
+                            value = {formdata.password}
+                            onChange = {handleChange}
+                            required
+                            placeholder = "Nhập mật khẩu của bạn"
+                        />
+                    </div>
+                    
+                    <div>
+                        <label>Số điện thoại:</label>
+                        <input
+                            name = "phone"
+                            type = "text"
+                            value = {formdata.phone}
+                            onChange = {handleChange}
+                            required
+                            placeholder = "Nhập số điện thoại của bạn"
+                        />
+                    </div>
             
+                    <button className = {styles.submitButton} type = "submit"> Đăng ký </button>
 
+                </form>
+            
+            </div>
         </div>
     )
 }

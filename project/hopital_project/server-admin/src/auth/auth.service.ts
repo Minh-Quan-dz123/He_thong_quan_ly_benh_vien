@@ -3,6 +3,7 @@ import { AdminsService } from '../admins/admins.service';
 import { JwtService } from '@nestjs/jwt'; // tạo và ký JWT token
 import * as bcrypt from 'bcrypt';
 
+
 @Injectable()
 export class AuthService{
     constructor(
@@ -26,10 +27,16 @@ export class AuthService{
         return admin;
     }
 
-    // 2 tọa JWT khi login và sau khi validate thành công
+    // 2 tạo JWT khi login và sau khi validate thành công
     async login(admin: any)
     {
-        const payload = {email: admin.email, sub: admin.id};// lưu emai với id của admin trong mongodb
-        return { access_token: this.jwtService.sign(payload),};// tạo JWT token
+        const payload = {
+            sub: admin._id.toString(), 
+            email: admin.email,
+            fullName: admin.fullName,
+            phone: admin.phone,
+        };
+
+        return { access_token: this.jwtService.sign(payload, {expiresIn: '1h'}),};// tạo JWT token
     }
 }

@@ -1,14 +1,14 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
 
 import { AdminsController } from './admins.controller';
 import { AdminsService } from './admins.service';
-import { Admin } from './admin.entity';
+import { Admin , AdminSchema} from './admin.schema';
 
 
 @Module({
     imports: [
-        TypeOrmModule.forFeature([Admin]), // đăng ký repository Admin
+        MongooseModule.forFeature([{ name: Admin.name, schema: AdminSchema }]), // đăng ký model Admin
     ],
     
     controllers: [AdminsController],

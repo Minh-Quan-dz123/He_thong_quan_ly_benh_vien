@@ -1,189 +1,92 @@
-html, body {
-    width: 100%;
-    height: 100%;
-    margin: 0;
-    padding: 0;
+.pageContainer {
+  padding: 20px;
+  background-color: #f5faff;
+  min-height: 100vh;
 }
 
-/* Container tổng */
-.container {
-    width: 100%;
-    padding: 0;
-    margin: 0;
-    font-family: Arial, sans-serif;
-    background-color: #f9f9f9;
-    display: flex;
-    flex-direction: column;
-
+.pageTitle {
+  text-align: center;
+  color: #005f99;
+  margin-bottom: 25px;
 }
 
-.left
-{
-    padding: 0;
-    margin-right: 20px;
-    max-width: 25%;
+.searchContainer {
+  margin-bottom: 20px;
 }
 
-.divTop{
-    display: flex;
-    flex-direction: column;
-    margin-bottom: 20px;
+.searchRow {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 10px;
 }
 
-/* Header */
-.backButton {
-    background-color: #4caf50;
-    color: white;
-    border: none;
-    padding: 8px 12px;
-    border-radius: 5px;
-    cursor: pointer;
-    width: 100px;
-    margin-left: 30px;
+.searchRow input,
+.searchRow select {
+  padding: 8px 10px;
+  border-radius: 6px;
+  border: 1px solid #c0c0c0;
+  flex: 1;
+  font-size: 14px;
 }
 
-.backButton:hover { 
-    background-color: #45a049;
+.searchRow input:focus,
+.searchRow select:focus {
+  outline: none;
+  border-color: #0077cc;
+  box-shadow: 0 0 3px #0077cc;
 }
 
-/* title*/
-
-.tilteListPatients {
-    width: 100%;
-    text-align: center;
+.tableContainer {
+  background-color: #fff;
+  border-radius: 10px;
+  padding: 15px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-/*---dưới---*/
-.divBottom
-{
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    align-items: center;
+.patientTable {
+  width: 100%;
+  border-collapse: collapse;
 }
 
-.right
-{
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin: 20px;
+.patientTable th,
+.patientTable td {
+  padding: 10px;
+  border: 1px solid #e0e0e0;
+  text-align: left;
 }
 
-/* Input */
-
-/* Search filters */
-.searchFilters {
-    display: flex;
-    flex-direction: row;
-    gap: 10px;
-    margin-top: 10px;
-    width: 100%;
-    
+.patientTable th {
+  background-color: #0077cc;
+  color: #fff;
 }
 
-.searchFilters1 {
-    margin-left: 8%;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 0px;
-    width: 20%;
-    
+.patientTable tr:nth-child(even) {
+  background-color: #f0f8ff;
 }
 
-.searchFilters2 {
-    margin-left: 30px;
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding: 0px;
-    width: 20%;
-
-}
-
-.searchFilters input {
-    padding: 6px 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 93%;
-}
-.searchFilters select {
-    padding: 6px 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    width: 100%;
-}
-
-
-/* Table */
-.tablePatientInHopital
-{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-left: 8%;
-    padding-right: 8%;
-    width: 90%;
-}
-.titleTablePatientInHopital
-{
-    margin-top: 50px;
-    width: 100%;
-    text-align: center;
-}
-
-.tablePatientInHopital table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-}
-
-.tablePatientInHopital th, .tablePatientInHopital td {
-    padding: 10px;
-    text-align: left;
-    border-bottom: 1px solid #ddd;
-}
-
-.tablePatientInHopital th {
-    background-color: #4caf50;
-    color: white;
-}
-
-.tablePatientInHopital tr:hover {
-    background-color: #f1f1f1;
-}
-
-.editBtn {
-    background-color: #ff5722;
-    color: white;
-    border: none;
-    padding: 5px 8px;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.editBtn:hover {
-    background-color: #e64a19;
-}
-
-/* Pagination */
 .pagination {
-    margin-top: 15px;
-    text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 15px;
+  gap: 15px;
 }
 
 .pagination button {
-    margin: 0 5px;
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-    cursor: pointer;
+  padding: 6px 12px;
+  background-color: #0077cc;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 14px;
 }
 
 .pagination button:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.pagination span {
+  font-weight: 500;
 }

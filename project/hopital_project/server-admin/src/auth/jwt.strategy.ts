@@ -10,14 +10,21 @@ export class JwtStrategy extends PassportStrategy(Strategy)
         super({
         jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
         ignoreExpiration: false,
-        secretOrKey: 'SECRET_KEY',
+        secretOrKey: process.env.JWT_SECRET || 'MySuperSecretKey123',
         });
     }
     //
     async validate(payload: any)
     {
+        console.log(" JWT VALID:", payload);
         // payload chứa thông tin admin đã đăng nhập
-        return {adminId: payload.sub, email: payload.email};
+        return {
+            sub: payload.sub,
+            id: payload.sub,
+            email: payload.email,
+            fullName: payload.fullName,
+            phone: payload.phone,
+        };
     }
 }
 

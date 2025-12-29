@@ -1,4 +1,4 @@
-import { IsEmail, IsOptional, IsNotEmpty, IsString, IsInt } from 'class-validator';
+import { IsEmail, Matches,IsOptional, IsNotEmpty, IsString, IsInt } from 'class-validator';
 
 export class UpdateDepartmentDto {
 
@@ -12,11 +12,16 @@ export class UpdateDepartmentDto {
 
   @IsOptional()
   @IsString()
+  @Matches(/^[0-9]{10}$/, { message: 'Phone must be 10 digits' })
   phone?: string;
 
   @IsOptional()
-  @IsInt()
-  head_id?: number;
+  @IsString()
+  headId?: string;
+
+  @IsOptional()
+  @IsString()
+  headName?: string;
 
   @IsOptional()
   @IsInt()
@@ -24,5 +29,5 @@ export class UpdateDepartmentDto {
 
   @IsOptional()
   @IsInt()
-  PatientCount?: number;
+  patientCount?: number;
 }

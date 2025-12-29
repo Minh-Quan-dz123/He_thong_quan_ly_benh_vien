@@ -1,283 +1,396 @@
-import {useState, useEffect} from "react";
-import {useNavigate, useLocation} from "react-router-dom";
+import { useState, useEffect } from "react";
 import styles from "./DepartmentDetailPage.module.css";
-import LeftMenu from "../../../components/department/LeftMenuDepartmentInfor";
 
+export default function DepartmentDetailPage({ depId }) {
 
-export default function DepartmentDetailPage() {
-  
-  // 0 khai báo các object 
-  const navigate = useNavigate();
-  const location = useLocation();
-  const depId = location.state?.depId;
+  // 1 state
+  const [searchText, setSearchText] = useState("");// search
+  const [loading, setLoading] = useState(false);   // loading
+  const [department, setDepartment] = useState(null); // data
+  const [editDepartment, setEditDepartment] = useState(null); // edit
+  const [suggestions, setSuggestions] = useState([]); // gợi ý
 
-  // 1 khai báo state
-  const [searchId, setSearchId] = useState(depId);
-  const [loading, setLoading] = useState(false);
-  const [departmentInfor, setDepartmentInfor] = useState(null);
+  const [showDoctorTable, setShowDoctorTable] = useState(false); // có show ra table hay ko
+  const [doctorList, setDoctorList] = useState([]); // danh sách bác sĩ
 
-  // 1.1 giữ bản edit
-  const [editDepartment, setEditDepartment] = useState(null);
+  // 2 các hàm
 
+  // 2.1 lấy danh sách department hiện có (department manager lưu trong cache)
+  const fetchById = async (id) => {
+    if (!id) return;
 
-  
-
-  // 2 hàm gọi api
-  const fetchSearchById = async () =>{
     setLoading(true);
-    setDepartmentInfor(null);
-    setEditDepartment(null); // reset trước khi fetch
-    const token = localStorage.getItem("token");
-    //dùng trong lúc đợi kết quả từ server (giả định 1.5 giây) thì hiển thị loading
-    try
-    {
-        // giả lập server xử lý 1.5 giây dùng setTimeout
-        await new Promise((resolve) => setTimeout (resolve, 1500));
-        
-        // gọi API
-        const res = await fetch(`http://127.0.0.1:3000/departments/${searchId}`,{
-            method : "GET",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${token}`,// token
-            }
-        });
+    setDepartment(null);
+    setEditDepartment(null);
 
-        // kiểm tra kết quả trả về
-        if(!res.ok)
-        {
-            console.error("Lỗi khi lấy danh sách khoa");
-            setEditDepartment({ id: "", name: "", email: "", phone: "", doctorCount: 0, patientCount: 0 });
-            setLoading(false);
-            return;
-        }
+    try {
+      const raw = localStorage.getItem("departmentsCache");
+      if (!raw) return;
 
-        // nếu oke thì đọc dữ liệu
-        const data = await res.json();
-        setDepartmentInfor(data);
-        setEditDepartment(data);
-        console.log(`infor department là: ${searchId}`);
-        console.log(data);
-    }
-    catch (err){
-        console.error("Lỗi khi lấy danh sách khoa", err);
-        setEditDepartment({ id: "", name: "", email: "", phone: "", doctorCount: 0, patientCount: 0 });
-    }
-    finally
-    {
-      setLoading(false);
-    }
-  
-  };
+      const list = JSON.parse(raw);
+      const found = list.find((d) => String(d.id) === String(id));
 
-  //3 hàm search
-  const handleSearch = ()=>{
-    if(searchId === "") return;
-    fetchSearchById();
-  };
+      // nếu tìm thấy
+      if (found) {
+        const normalized = {
+          id: found.id,
+          name: found.name || "",
+          email: found.email || "",
+          phone: found.phoneNumber || "",
+          head_id: found.headId || "",
+          head_name: found.headName || "",
+          doctorCount: found.doctorCount ?? 0,
+          patientCount: found.patientCount ?? 0,
+        };
 
-  // 4 lấy depid nếu có và gọi api
-  useEffect(() => {
-    if(depId)
-    {
-      setSearchId(depId)
-      // nếu có thì fetch thông tin chi tiết luôn
-      // gọi hàm search theo id
-      handleSearch();
-    }
-    
-  },[depId]); // chỉ chạy khi depId thay đổi
-
-  
-  // 5 confirm sửa thông tin
-  const handleConfirm = async () => {
-    const token = localStorage.getItem("token");
-    setLoading(true);
-    try 
-    {
-      console.log(editDepartment);
-      const sendData = {
-        name: editDepartment.name,
-        email: editDepartment.email,
-        phone: editDepartment.phone,
-        head_id: editDepartment.head_id // nếu có thể update
-      };
-      
-      const res = await fetch(`http://127.0.0.1:3000/departments/${editDepartment.id}`, {
-        method: "PATCH",
-        headers: { 
-          "Content-Type": "application/json" ,
-          "Authorization": `Bearer ${token}`,// token
-        },
-        body: JSON.stringify(sendData),
-      });
-
-      if (!res.ok) 
-      {
-        let errMes = "edit thất bại";
-        try{
-            const errData = await res.json();
-            errMes = errData.message || errMes;
-        }
-        catch{}
-        throw new Error(errMes);
+        setDepartment(normalized);
+        setEditDepartment(normalized);
+        setSearchText(found.name || "");
       }
-
-      const data = await res.json();
-      setDepartmentInfor(data);
-      setEditDepartment(data);
-      alert("Update successful");
     } 
-    catch (err) 
-    {
-      console.error(err);
-      alert("Update failed");
-    }
+    catch (err) {
+      console.error("Fetch department error:", err);
+    } 
     finally {
       setLoading(false);
     }
   };
 
+  // 2.2 cập nhật gợi ý theo text từ input
+  const handleSearchInput = (text) => {
+    setSearchText(text);
 
-  // 6 hoàn tác sửa
-  const handleBack = () => {
-    setEditDepartment(departmentInfor);
+    if (!text.trim()) {
+      setSuggestions([]);
+      return;
+    }
+
+    const raw = localStorage.getItem("departmentsCache");
+    if (!raw) return;
+
+    const list = JSON.parse(raw);
+    const filtered = list.filter((d) =>
+      d.name?.toLowerCase().includes(text.toLowerCase())
+    );
+
+    setSuggestions(filtered.slice(0, 3)); // hiển thị đối đa 3 dòng
   };
 
-   // Xóa department
-  const handleDelete = async () => {
-    if (!window.confirm("Are you sure to delete this department?")) return;
-    try 
-    {
+  // 2.3 set gợi ý
+  const handleSelectSuggestion = (dep) => {
+    setSuggestions([]);
+    fetchById(dep.id);
+  };
+
+  // 2.4 xử lý bảng doctor = gọi api
+  const handleOpenDoctorTable = async () => {
+    setLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch("http://127.0.0.1:3000/doctors", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      if (!res.ok) throw new Error("Lấy danh sách bác sĩ thất bại");
+      const data = await res.json();
+
+      setDoctorList(data);               // lưu vào state
+      localStorage.setItem("doctorsCache", JSON.stringify(data)); // lưu vào cache 
+
+      setShowDoctorTable(true);
+    } 
+    catch (err) {
+      alert(err.message);
+    } 
+    finally {
+      setLoading(false);
+    }
+  };
+
+  // 2.5 xử lý  khi chọn doctor = cập nhật id và name của head
+  const handleSelectDoctor = (doctor) => {
+    setEditDepartment((prev) => ({
+      ...prev,
+      head_id: doctor.id,
+      head_name: doctor.name,
+    }));
+    setShowDoctorTable(false);
+  };
+
+  // 2.6 gọi api cập nhật thông tin
+  const handleConfirm = async () => {
+    if (!editDepartment) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Lỗi mạng");
+      return;
+    }
+
+    const payload = {
+      name: editDepartment.name,
+      email: editDepartment.email,
+      phone: editDepartment.phone,
+      headId: editDepartment.head_id || null,
+      headName: editDepartment.head_name || null,
+    };
+
+    try {
       setLoading(true);
 
-      const res = await fetch(`http://127.0.0.1:3000/api/departments/${editDepartment.id}`, {
-        method: "DELETE",
-      });
-      if (!res.ok) throw new Error("Delete failed");
+      const res = await fetch(
+        `http://127.0.0.1:3000/departments/${editDepartment.id}`,
+        {
+          method: "PATCH",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify(payload),
+        }
+      );
 
-      await new Promise((resolve) => setTimeout(resolve, 1000)); // giả lập
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Cập nhật khoa thất bại");
 
-      setLoading(false);
-      alert("Department deleted");
-      navigate(-1); // quay về trang trước
+      setDepartment(editDepartment);
+
+      // Update cache
+      const raw = localStorage.getItem("departmentsCache");
+      if (raw) {
+        const list = JSON.parse(raw);
+        const newList = list.map((d) =>
+          d.id === editDepartment.id
+            ? {
+                ...d,
+                name: payload.name,
+                email: payload.email,
+                phoneNumber: payload.phone,
+                headId: payload.headId,
+                headName: payload.headName,
+              }
+            : d
+        );
+        localStorage.setItem("departmentsCache", JSON.stringify(newList));
+      }
+
+      alert("Cập nhật khoa thành công!");
     } 
-    catch (err) 
-    {
-      console.error(err);
+    catch (err) {
+      alert(err.message);
+    } 
+    finally {
       setLoading(false);
-      alert("Delete failed");
     }
-  }
+  };
 
-  
+  //2.7 nút back, quay lại bước trước
+  const handleBack = () => {
+    setEditDepartment(department);// edit = department chính hiện tại
+  };
+
+  // 2.8 api gọi hàm xóa
+  const handleDelete = async () => {
+    if (!editDepartment) return;
+
+    if (!window.confirm("Bạn có chắc chắn muốn xóa khoa này?")) return;
+
+    const token = localStorage.getItem("token");
+    if (!token) {
+      alert("Lỗi xác thực");
+      return;
+    }
+
+    try {
+      setLoading(true);
+
+      const res = await fetch(
+        `http://127.0.0.1:3000/departments/${editDepartment.id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.message || "Xóa khoa thất bại");
+
+      // xóa khỏi cache
+      const raw = localStorage.getItem("departmentsCache");
+      if (raw) {
+        const list = JSON.parse(raw);
+        const newList = list.filter((d) => d.id !== editDepartment.id);
+        localStorage.setItem("departmentsCache", JSON.stringify(newList));
+      }
+
+      setDepartment(null);
+      setEditDepartment(null);
+      setSearchText("");
+      setSuggestions([]);
+
+      alert("Xóa khoa thành công!");
+    } 
+    catch (err) {
+      alert(err.message);
+    } 
+    finally {
+      setLoading(false);
+    }
+  };
+
+  // vừa vào đã tìm theo id nếu có
+  useEffect(() => {
+    if (depId) fetchById(depId);
+  }, [depId]);
 
   return (
-    <div className={styles.pageContainer}>
+    <div className={styles.department_container}>
+      {/* 1 phần header */}
+      <div className={styles.department_header}>
+        {/* 1.1 header */}
+        <h3>Chi tiết khoa</h3>
 
-      {/* phần div trên */}
-      <div className={styles.divTop}>
-        <button 
-          className= {styles.backButton}
-          onClick = {()=> navigate(-1)}
-          >  
-              ⬅ Back 
-        </button>
+        {/* 1.2 search */}
+        <div className={styles.department_searchBox}>
+          {/* 1.2.1 thanh tìmkieems */}
+          <input
+            placeholder="Tìm khoa theo tên"
+            value={searchText}
+            onChange={(e) => handleSearchInput(e.target.value)}
+          />
 
-        <h2 className = {styles.titleh2}>Department Information Management </h2>
-      </div>
-
-      {/* phần div dưới */}
-      <div className={styles.divBottom}>
-
-        {/* Div  left */}
-        <div className={styles.leftMenu}>
-          <LeftMenu/>
-        </div>
-
-        {/* Div right */}
-        <div className={styles.rightContent}>
-
-          <div className={styles.searchDiv}>
-            <input
-              type="text"
-              placeholder="🔍 Enter Department ID"
-              value={searchId}
-              onChange={(e) => setSearchId(e.target.value)}
-            />
-            <button onClick={handleSearch}>Confirm</button>
-          </div>
-
-          {loading && <p>Loading...</p>}
-
-          {!loading && editDepartment &&(
-            <div className={styles.resultBox}>
-              <div className={styles.infoGroup1}>
-                <label>
-                  Department ID:
-                  <input
-                    type="number"
-                    value={editDepartment.id}
-                    disabled
-                  />
-                </label>
-
-                <label>
-                  Department Name:
-                  <input
-                    type="text"
-                    value={editDepartment.name}
-                    onChange={(e) =>
-                      setEditDepartment({ ...editDepartment, name: e.target.value })
-                    }
-                  />
-                </label>
-
-                <label>
-                  Email:
-                  <input
-                    type="email"
-                    value={editDepartment.email}
-                    onChange={(e) =>
-                      setEditDepartment({ ...editDepartment, email: e.target.value })
-                    }
-                  />
-                </label>
-
-                <label>
-                  Phone Number:
-                  <input
-                    type="text"
-                    value={editDepartment.phone}
-                    onChange={(e) =>
-                      setEditDepartment({ ...editDepartment, phone: e.target.value })
-                    }
-                  />
-                </label>
-              </div>
-
-              <div className={styles.infoGroup2}>
-                <label>
-                  Doctor Number: <span>{editDepartment.doctorCount}</span>
-                </label>
-
-                <label>
-                  Patient Number: <span>{editDepartment.patientCount}</span>
-                </label>
-              </div>
-
-              {/* Buttons */}
-              <div className={styles.buttonGroup}>
-                <button onClick={handleConfirm}>Submit</button>
-                <button onClick={handleBack}>Back</button>
-                <button onClick={handleDelete}>Delete</button>
-              </div>
+          {/* 1.2.2 gợi ý */}
+          {suggestions.length > 0 && (
+            <div className={styles.department_suggestions}>
+              {suggestions.map((dep) => (
+                <div
+                  key={dep.id}
+                  className={styles.department_suggestionItem}
+                  onClick={() => handleSelectSuggestion(dep)}
+                >
+                  {dep.name}
+                </div>
+              ))}
             </div>
           )}
         </div>
-
       </div>
-      
+
+      {/* 2 loading */}
+      {loading && <p>Loading...</p>}
+
+      {/* 2 loading */}
+      {!loading && editDepartment && (
+        <>
+          {/* 2 kết quả sau loading */}
+          <div className={styles.department_card}>
+
+            {/* 2.1 kết quả */}
+            <div className={styles.department_grid}>
+              <div>
+                <label>ID khoa</label>
+                <input value={editDepartment.id} disabled />
+              </div>
+              <div>
+                <label>Tên khoa</label>
+                <input
+                  value={editDepartment.name}
+                  onChange={(e) =>
+                    setEditDepartment({ ...editDepartment, name: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label>Email</label>
+                <input
+                  value={editDepartment.email}
+                  onChange={(e) =>
+                    setEditDepartment({ ...editDepartment, email: e.target.value })
+                  }
+                />
+              </div>
+              <div>
+                <label>Số điện thoại</label>
+                <input
+                  value={editDepartment.phone}
+                  onChange={(e) =>
+                    setEditDepartment({ ...editDepartment, phone: e.target.value })
+                  }
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className={styles.department_card}>
+            <div className={styles.department_headRow}>
+              <div>
+                <strong>{editDepartment.head_name || "Chưa cập nhật"}</strong>
+                <p>ID: {editDepartment.head_id || "---"}</p>
+              </div>
+              <button
+                className={styles.department_primaryBtn}
+                onClick={handleOpenDoctorTable}
+              >
+                Chọn bác sĩ
+              </button>
+            </div>
+
+            {showDoctorTable && (
+              <table className={styles.department_table}>
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Tên</th>
+                    <th>Chuyên khoa</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {doctorList.map((doc) => (
+                    <tr key={doc.id} onClick={() => handleSelectDoctor(doc)}>
+                      <td>{doc.id}</td>
+                      <td>{doc.name}</td>
+                      <td>{doc.specialty}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+
+          <div className={styles.department_stats}>
+            <div>
+              <span>Số bác sĩ</span>
+              <strong>{editDepartment.doctorCount}</strong>
+            </div>
+            <div>
+              <span>Số bệnh nhân</span>
+              <strong>{editDepartment.patientCount}</strong>
+            </div>
+          </div>
+
+          <div className={styles.department_actions}>
+            <button
+              className={styles.department_primaryBtn}
+              onClick={handleConfirm}
+            >
+              Lưu
+            </button>
+            <button
+              className={styles.department_secondaryBtn}
+              onClick={handleBack}
+            >
+              Hoàn tác
+            </button>
+            <button
+              className={styles.department_dangerBtn}
+              onClick={handleDelete}
+            >
+              Xóa
+            </button>
+          </div>
+        </>
+      )}
     </div>
   );
 }

@@ -20,11 +20,14 @@ async function bootstrap() {
     app.enableCors({
         origin: "http://localhost:5173", // bên front end
         credentials: true,
+        methods: ['GET', 'POST', 'PUT', 'PATCH',  'DELETE', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
     });
 
 
   await app.listen(3000, '0.0.0.0'); // bind tất cả interface IPv4);
-  console.log(`🚀 Backend đang chạy tại: ${await app.getUrl()}`);
+  console.log(`backend đang chạy tại: ${await app.getUrl()}`);
 
 }
 bootstrap();
+ 

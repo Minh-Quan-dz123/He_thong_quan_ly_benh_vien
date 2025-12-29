@@ -12,10 +12,13 @@ import { AuthController } from './auth.controller';
   imports: [
     AdminsModule,
     PassportModule,
-    JwtModule.register({
-      secret: 'SECRET_KEY', // production: để env variable
-      signOptions: { expiresIn: '1h' }, //token hết hạn sau 1h
-    }),
+    JwtModule.registerAsync({
+      useFactory: () => ({
+        //secret: process.env.JWT_SECRET,
+        secret: 'MySuperSecretKey123',
+        signOptions: { expiresIn: '1h' },
+      }),
+    })
   ],
 
   providers: [AuthService, JwtStrategy],

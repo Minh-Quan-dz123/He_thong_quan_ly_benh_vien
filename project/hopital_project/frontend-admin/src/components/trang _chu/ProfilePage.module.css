@@ -1,0 +1,124 @@
+.profileRoot {
+  width: 100%;
+  max-width: 600px;
+  margin: 50px auto;
+  padding: 30px;
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  font-family: "Segoe UI", sans-serif;
+}
+
+.profileRoot h2 {
+  text-align: center;
+  color: #2563eb;
+  margin-bottom: 30px;
+  font-size: 24px;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 20px;
+}
+
+.formGroup label {
+  margin-bottom: 6px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.inputContainer {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.inputContainer input {
+  width: 100%;
+  padding: 12px 40px 12px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.inputContainer input:disabled {
+  background-color: #f9fafb;
+  cursor: not-allowed;
+}
+
+.inputContainer input.editing {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+  background-color: #fff;
+}
+
+.editIcon {
+  position: absolute;
+  right: 12px;
+  cursor: pointer;
+  color: #6b7280;
+  transition: all 0.2s;
+  font-size: 18px;
+}
+
+.editIcon:hover {
+  color: #2563eb;
+}
+
+.changePasswordBtn {
+  background-color: #f59e0b;
+  color: #fff;
+  padding: 10px 18px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  align-self: flex-start;
+  margin-top: 5px;
+}
+
+.changePasswordBtn:hover {
+  background-color: #d97706;
+}
+
+.buttonGroup {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 30px;
+}
+
+.backButton {
+  background-color: #e5e7eb;
+  color: #111;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.backButton:hover {
+  background-color: #d1d5db;
+}
+
+.saveButton {
+  background-color: #2563eb;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 8px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.saveButton:hover {
+  background-color: #1d4ed8;
+}
+.errorText {
+  color: #dc2626;
+  font-size: 13px;
+  margin-top: 6px;
+}

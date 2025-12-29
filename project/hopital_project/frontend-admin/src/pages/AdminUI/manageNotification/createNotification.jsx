@@ -109,13 +109,14 @@ export default function CreateNotification()
 
     // 3 submid
     const handleSubmit = async () => {
+        return;// tạm thời
         if (!notification.content.trim()) {
-            alert("Notification content is required");
+            alert("bạn chưa điền nội dung");
             return;
         }
 
         if (!notification.startTime || !notification.endTime) {
-            alert("Start time and end time are required");
+            alert("start time và End time chưa điền");
             return;
         }
 
@@ -130,14 +131,14 @@ export default function CreateNotification()
         {
             if (receiver.length === 0) 
             {
-                alert("Receiver list is empty");
+                alert("bạn chưa chọn người nhận");
                 return;
             }
             receiverIds = receiver.map(r => r.id);
         } 
         else 
         {
-            alert("Please select receiver group");
+            alert("hãy chọn người nhận");
             return;
         }
 
@@ -159,10 +160,11 @@ export default function CreateNotification()
 
             if (!res.ok) throw new Error("Create notification failed");
 
-            alert("Notification sent successfully");
+            alert("Notification đã gửi thành công");
             
         } 
-        catch (err) {
+        catch (err) 
+        {
             console.error(err);
             alert("Error sending notification");
         }
@@ -173,25 +175,22 @@ export default function CreateNotification()
 
     return(
         <div className = {styles.container}>
-            <div className={styles.divTop}>
-                <button className={styles.backButton} onClick={() => navigate(-1)}>⬅ Back</button>
-                <h2 className={styles.titleh2}>Create New Notication</h2>
-            </div>
+            
 
             <div className={styles.divBottom}>
                 {/* 1 chọn người nhận */}
                 <div className={styles.divSelectReceiver}>
                     {/* 1.1 chọn role */}
                     <select value = {role} onChange={(e) => {setRole(e.target.value);}}> 
-                        <option value = "doctor"> Doctors </option>
-                        <option value = "patient"> Patients </option>
+                        <option value = "doctor">Bác sĩ </option>
+                        <option value = "patient"> Bệnh nhân </option>
                     </select>
 
                     {/* 1.2 chọn nhóm người nhận */}
                     <select value = {selectGroup} onChange={(e) => {setSelectGroup(e.target.value)}}> 
-                        <option value = ""> Select Receiver</option>
-                        <option value = "*"> All</option>
-                        <option value = "Other"> Other </option>
+                        <option value = ""> Chọn người nhận</option>
+                        <option value = "*"> Tất cả</option>
+                        <option value = "Other"> Khác </option>
                     </select>
 
                     {/* những người nhận cụ thể */}
@@ -200,26 +199,26 @@ export default function CreateNotification()
                             {/* lọc và tìm kiếm */}
                             <div>
                                 <input 
-                                type="number"
-                                placeholder="Search by ID"
+                                type="text"
+                                placeholder="Tìm theo ID"
                                 value={search.id}
                                 onChange={(e) => handleSearch("id", e.target.value)}
                                 />
                                 <input 
                                 type="text"
-                                placeholder="Search by Name"
+                                placeholder="Tìm theo tên"
                                 value={search.name}
                                 onChange={(e) => handleSearch("name", e.target.value)}
                                 />
                                 <input 
-                                type="number"
-                                placeholder="Search by Department ID"
+                                type="text"
+                                placeholder="Tìm theo Id của khoa"
                                 value={search.departmentId}
                                 onChange={(e) => handleSearch("departmentId", e.target.value)}
                                 />
                                 <input 
                                 type="number"
-                                placeholder="Search by Phone"
+                                placeholder="Tìm theo số điện thoại"
                                 value={search.phone}
                                 onChange={(e) => handleSearch("phone", e.target.value)}
                                 />
@@ -231,10 +230,10 @@ export default function CreateNotification()
                                     <tr>
                                         <th> STT </th>
                                         <th> ID</th>
-                                        <th> Name </th>
-                                        <th> Gender </th>
-                                        <th> Phone Number </th>
-                                        <th> Status</th>
+                                        <th> Tên </th>
+                                        <th> Giới tính </th>
+                                        <th> Số điện thoại </th>
+                                        <th> Trạng trái</th>
                                         
                                     </tr>
                                 </thead>
@@ -267,13 +266,13 @@ export default function CreateNotification()
                 {/* 2 viết nội dung gửi */}
                 <div className={styles.divSend}>
                     <select value = {notification.type} onChange={(e) => {handleNotificationChange("type", e.target.value)}}> 
-                        <option value = "Notification"> Notification </option>
-                        <option value = "Appointment"> Appointment </option>
-                        <option value = "Result"> Result </option>
+                        <option value = "Notification"> Thông báo </option>
+                        <option value = "Appointment"> Lịch hẹn </option>
+                        <option value = "Result"> Kết quả </option>
                     </select>
 
                     <label>
-                        Start Time
+                        Thời gian bắt đầu
                         <input
                         type="datetime-local"
                         value={notification.startTime}
@@ -282,7 +281,7 @@ export default function CreateNotification()
                     </label>
 
                     <label>
-                        End Time
+                        Thời gian kết thúc
                         <input
                         type="datetime-local"
                         value={notification.endTime}
@@ -290,19 +289,21 @@ export default function CreateNotification()
                         />
                     </label>
                     <label>
-                        Notification Content
+                        Nội dung
                         <textarea
                             className={styles.textareaContent}
                             value={notification.content}
                             onChange={(e) => handleNotificationChange("content", e.target.value)}
                             rows={6}
-                            placeholder="Enter notification content..."
+                            placeholder="Nhập nội dung..."
                         />
                     </label>
 
                 </div>
 
-                <button className = {styles.buttonSubmit}> Submit </button>
+                <button className = {styles.buttonSubmit}
+                onClick={handleSubmit}
+                > Xác nhận </button>
 
             </div>
         </div>

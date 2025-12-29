@@ -1,16 +1,20 @@
 import { Module } from '@nestjs/common';
-import { TypeOrmModule } from '@nestjs/typeorm';
+import { MongooseModule } from '@nestjs/mongoose';
 
-import { Department } from './department.entity';
+import { Department , DepartmentSchema} from './department.schema';
 import { DepartmentService } from './departments.service';
 import { DepartmentController } from './departments.controller';
-import { Admin } from '../admins/admin.entity'
+import { Admin, AdminSchema } from '../admins/admin.schema'
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Department,Admin])],
-
+  imports: [
+    MongooseModule.forFeature([
+      { name: Department.name, schema: DepartmentSchema },
+      { name: Admin.name, schema: AdminSchema },
+    ]),
+  ],
   controllers: [DepartmentController],
   providers: [DepartmentService],
-  exports: [DepartmentService], // export nếu muốn dùng service ở module khác
+  exports: [DepartmentService], 
 })
 export class DepartmentsModule {}

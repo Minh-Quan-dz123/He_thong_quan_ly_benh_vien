@@ -1,47 +1,36 @@
-
-
 .departmentTable {
-    width: 100%; /* chiều rộng cố định */
-    border-collapse: collapse; /* gộp đường viền */
-    margin: 20px auto; /* căn giữa bảng */
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1); /* bóng nhẹ */
-    font-family: Arial, sans-serif;
-}
-
-.departmentTable th, .departmentTable td {
-    border: 1px solid black; /* viền đen */
-    padding: 10px; /* khoảng cách bên trong ô */
-    text-align: center; /* header và data nằm giữa */
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
 }
 
 .departmentTable th {
-    background-color: #4CAF50; /* màu nền header */
-    color: white; /* chữ trắng */
-    font-weight: bold;
+  background: #1e3a8a;
+  color: white;
+  padding: 12px;
+  font-size: 13px;
+  text-transform: uppercase;
 }
 
-.departmentTable tr:nth-child(even) {
-    background-color: #f2f2f2; /* xen kẽ màu nền cho các dòng */
+.departmentTable td {
+  padding: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
 }
 
-.departmentTable tr:hover {
-    background-color: #ddd; /* hover nhẹ */
+.row {
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
 
-.detailsButton
-{
-    background-color: #5e94dc; 
-    color: white;
-    border: none; 
-    padding: 6px 12px; 
-    border-radius: 5px; 
-    cursor: pointer; 
-    transition: all 0.3s ease; /* hiệu ứng chuyển màu mượt */
-    font-size: 14px;
+.row:hover {
+  background: #eff6ff;
 }
 
-.detailsButton:hover {
-    background-color: #2062c6; /* đổi màu khi hover */
-    transform: translateY(-1px); /* hơi nhấc lên khi hover */
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2); /* bóng nhẹ */
+.name {
+  font-weight: 600;
+  color: #1e40af;
 }
