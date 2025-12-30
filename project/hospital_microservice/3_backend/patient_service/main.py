@@ -1,13 +1,14 @@
-from fastapi import FastAPI, HTTPException, status, Request
+from fastapi import FastAPI, HTTPException, status, Request, Depends
 from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer
 from database import db, MONGO_URI
 import certifi
 from pymongo import MongoClient
 DOCTOR_DB_NAME = "hospital_doctors_db"
 from schemas import UserRegister, UserResponse, UserLogin, OTPRequest, OTPVerify, ResetPassword, UserDetailResponse, UserUpdate, AppointmentCreate, AppointmentResponse
-from utils import get_password_hash, hash_document_number, encrypt_document_number, decrypt_document_number, verify_password
+from utils import get_password_hash, hash_document_number, encrypt_document_number, decrypt_document_number, verify_password, create_access_token, decode_access_token
 # from sms_service import send_sms
 from pymongo.errors import DuplicateKeyError
 from bson import ObjectId
@@ -18,6 +19,37 @@ from datetime import datetime
 from schemas import MedicalRecordCreate, MedicalRecordResponse
 
 app = FastAPI(title="Patient Service API")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+async def get_current_user(token: str = Depends(oauth2_scheme)):
+    payload = decode_access_token(token)
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    username: str = payload.get("sub")
+    role: str = payload.get("role")
+    if username is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    
+    if role == 'doctor':
+        doctor_client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
+        doctor_db = doctor_client[DOCTOR_DB_NAME]
+        user = doctor_db.doctors.find_one({"username": username})
+        doctor_client.close()
+    else:
+        user = db.get_db().patients.find_one({"username": username})
+        
+    if user is None:
+        raise HTTPException(status_code=404, detail="User not found")
+    return user
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
@@ -151,12 +183,16 @@ async def login(user_login: UserLogin):
     if not verify_password(user_login.password, user['password_hash']):
         raise HTTPException(status_code=400, detail="Mật khẩu không chính xác")
 
+    access_token = create_access_token(data={"sub": user["username"], "role": role})
+
     return UserResponse(
         id=str(user["_id"]),
         username=user["username"],
         name=user["name"],
         phone=user["phone"],
-        role=role
+        role=role,
+        access_token=access_token,
+        token_type="bearer"
     )
 
 # @app.post("/forgot-password/request-otp")
@@ -196,8 +232,12 @@ async def reset_password(request: ResetPassword):
 
 
 @app.get("/patients/{user_id}", response_model=UserDetailResponse)
-async def get_patient_detail(user_id: str):
+async def get_patient_detail(user_id: str, current_user: dict = Depends(get_current_user)):
     try:
+        # Check if user is accessing their own profile or if it's a doctor
+        if str(current_user["_id"]) != user_id and current_user.get("role") != "doctor":
+             raise HTTPException(status_code=403, detail="Not authorized to access this profile")
+
         user = db.get_db().patients.find_one({"_id": ObjectId(user_id)})
         if not user:
             raise HTTPException(status_code=404, detail="User not found")

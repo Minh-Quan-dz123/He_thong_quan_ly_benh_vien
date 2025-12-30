@@ -1,10 +1,11 @@
-from fastapi import FastAPI, HTTPException, status, Request
+from fastapi import FastAPI, HTTPException, status, Request, Depends
 from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import OAuth2PasswordBearer
 from database import db, MONGO_URI
 from schemas import DoctorRegister, DoctorResponse, DoctorDetailResponse
 from schemas import DoctorLogin, DoctorUpdate, PatientResponse, MedicalRecordCreate, MedicalRecordResponse, PaginatedPatientResponse
-from utils import get_password_hash, hash_document_number, encrypt_document_number, decrypt_document_number, verify_password
+from utils import get_password_hash, hash_document_number, encrypt_document_number, decrypt_document_number, verify_password, create_access_token, decode_access_token
 from pymongo.errors import DuplicateKeyError
 from bson import ObjectId
 from schemas import DoctorLogin
@@ -15,6 +16,28 @@ import re
 from datetime import datetime
 
 app = FastAPI(title="Doctor Service API")
+
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+async def get_current_doctor(token: str = Depends(oauth2_scheme)):
+    payload = decode_access_token(token)
+    if not payload or payload.get("role") != "doctor":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    username: str = payload.get("sub")
+    if username is None:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Could not validate credentials",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    doctor = db.get_db().doctors.find_one({"username": username})
+    if doctor is None:
+        raise HTTPException(status_code=404, detail="Doctor not found")
+    return doctor
 
 app.add_middleware(
     CORSMiddleware,
@@ -100,13 +123,17 @@ async def login_doctor(user_login: DoctorLogin):
     if not verify_password(user_login.password, d['password_hash']):
         raise HTTPException(status_code=400, detail="Mật khẩu không chính xác")
 
+    access_token = create_access_token(data={"sub": d["username"], "role": "doctor"})
+
     return DoctorResponse(
         id=str(d["_id"]), 
         username=d["username"], 
         name=d["name"], 
         phone=d.get("phone",""), 
         role='doctor',
-        specialty=d.get("specialty")
+        specialty=d.get("specialty"),
+        access_token=access_token,
+        token_type="bearer"
     )
 
 
@@ -218,7 +245,7 @@ async def search_patients(query: Optional[str] = None, page: int = 1, limit: int
 
 
 @app.post("/patients/{patient_id}/medical_records", response_model=MedicalRecordResponse, status_code=status.HTTP_201_CREATED)
-async def create_medical_record(patient_id: str, record: MedicalRecordCreate):
+async def create_medical_record(patient_id: str, record: MedicalRecordCreate, current_doctor: dict = Depends(get_current_doctor)):
     try:
         client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
         hospital_db = client["hospital_db"]

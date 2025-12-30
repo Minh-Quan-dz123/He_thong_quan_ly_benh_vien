@@ -71,6 +71,8 @@ class DoctorResponse(BaseModel):
     phone: str
     role: Optional[str] = None
     specialty: Optional[str] = None
+    access_token: Optional[str] = None
+    token_type: Optional[str] = "bearer"
 
     class Config:
         from_attributes = True

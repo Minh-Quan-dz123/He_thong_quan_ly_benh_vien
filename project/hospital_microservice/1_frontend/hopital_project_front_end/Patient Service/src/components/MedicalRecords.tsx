@@ -12,7 +12,10 @@ const MedicalRecords = () => {
         if (!user.id) return;
 
         const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
-        const resp = await fetch(`${API_BASE_URL}/patients/${user.id}/medical_records`);
+        const token = localStorage.getItem('token');
+        const resp = await fetch(`${API_BASE_URL}/patients/${user.id}/medical_records`, {
+          headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+        });
         if (resp.ok) {
           const data = await resp.json();
           setRecords(data);

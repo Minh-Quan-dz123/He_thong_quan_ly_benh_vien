@@ -79,6 +79,9 @@ function App() {
     setCurrentUser(user);
     setUserRole(role);
     localStorage.setItem('user', JSON.stringify(user));
+    if (user.access_token) {
+      localStorage.setItem('token', user.access_token);
+    }
   };
 
   const handleRegister = async (userData: any) => {
@@ -116,6 +119,7 @@ function App() {
     setCurrentUser(null);
     setUserRole(null);
     localStorage.removeItem('user');
+    localStorage.removeItem('token');
   };
 
   return (
@@ -129,8 +133,18 @@ function App() {
           from { transform: translateX(0); opacity: 1; }
           to { transform: translateX(100%); opacity: 0; }
         }
+        @keyframes fadeIn {
+          from { opacity: 0; }
+          to { opacity: 1; }
+        }
+        @keyframes zoomIn {
+          from { transform: scale(0.95); opacity: 0; }
+          to { transform: scale(1); opacity: 1; }
+        }
         .toast-enter { animation: slideInRight 0.5s ease-out forwards; }
         .toast-exit { animation: slideOutRight 0.5s ease-in forwards; }
+        .animate-fade-in { animation: fadeIn 0.2s ease-out forwards; }
+        .animate-zoom-in { animation: zoomIn 0.2s ease-out forwards; }
       `}</style>
       
       {showToast && (
