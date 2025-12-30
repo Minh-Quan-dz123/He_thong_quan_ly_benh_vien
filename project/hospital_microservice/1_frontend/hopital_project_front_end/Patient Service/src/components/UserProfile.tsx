@@ -33,7 +33,10 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
         try {
           const base = role === 'doctor' ? DOCTOR_API_BASE_URL : API_BASE_URL;
           const path = role === 'doctor' ? 'doctors' : 'patients';
-          const response = await fetch(`${base}/${path}/${currentUser.id}`);
+          const token = localStorage.getItem('token');
+          const response = await fetch(`${base}/${path}/${currentUser.id}`, {
+            headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+          });
           if (response.ok) {
             const data = await response.json();
             setUser({

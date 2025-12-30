@@ -29,7 +29,8 @@ class UserResponse(BaseModel):
     name: str
     phone: str
     role: Optional[str] = None
-    # We don't return sensitive info like password or document number by default
+    access_token: Optional[str] = None
+    token_type: Optional[str] = "bearer"
 
     class Config:
         from_attributes = True

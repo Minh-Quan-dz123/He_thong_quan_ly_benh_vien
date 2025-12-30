@@ -36,7 +36,10 @@ const DoctorPatients = () => {
   const fetchPatients = useCallback(async (q: string, page: number) => {
     setIsLoading(true);
     try {
-      const resp = await fetch(`${DOCTOR_API_BASE_URL}/patients/search?query=${encodeURIComponent(q)}&page=${page}&limit=10`);
+      const token = localStorage.getItem('token');
+      const resp = await fetch(`${DOCTOR_API_BASE_URL}/patients/search?query=${encodeURIComponent(q)}&page=${page}&limit=10`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
       if (resp.ok) {
         const data = await resp.json();
         setPatients(data.patients.map((p: any) => ({ id: p.id, username: p.username, name: p.name, phone: p.phone, dob: p.dob, address: p.address })));
@@ -58,7 +61,10 @@ const DoctorPatients = () => {
     setViewingPatient(patient);
     setIsLoadingRecords(true);
     try {
-      const resp = await fetch(`${DOCTOR_API_BASE_URL}/patients/${patient.id}/medical_records`);
+      const token = localStorage.getItem('token');
+      const resp = await fetch(`${DOCTOR_API_BASE_URL}/patients/${patient.id}/medical_records`, {
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
       if (resp.ok) {
         const data = await resp.json();
         setMedicalRecords(data);
@@ -88,8 +94,10 @@ const DoctorPatients = () => {
     if (!viewingPatient || !window.confirm('Bạn có chắc chắn muốn xóa bệnh án này?')) return;
     
     try {
+      const token = localStorage.getItem('token');
       const resp = await fetch(`${DOCTOR_API_BASE_URL}/patients/${viewingPatient.id}/medical_records/${recordId}`, {
-        method: 'DELETE'
+        method: 'DELETE',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
       });
       if (resp.ok) {
         setMedicalRecords(prev => prev.filter(r => r.id !== recordId));
@@ -137,7 +145,7 @@ const DoctorPatients = () => {
         </div>
       </div>
 
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
+      <div className="bg-white shadow sm:rounded-md">
         <ul className="divide-y divide-gray-200">
           {isLoading && (
             <li>
@@ -189,35 +197,58 @@ const DoctorPatients = () => {
                           </div>
                           <div className="relative">
                             <button 
-                              onClick={() => setOpenMenuFor(openMenuFor === patient.id ? null : patient.id)} 
-                              className="p-2 hover:bg-gray-100 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setOpenMenuFor(openMenuFor === patient.id ? null : patient.id);
+                              }} 
+                              className={`p-2 rounded-full transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+                                openMenuFor === patient.id ? 'bg-blue-100 text-blue-600' : 'hover:bg-gray-100 text-gray-500'
+                              }`}
                               title="Thao tác"
                             >
-                              <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 text-gray-500" viewBox="0 0 20 20" fill="currentColor">
+                              <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M10 6a2 2 0 110-4 2 2 0 010 4zM10 12a2 2 0 110-4 2 2 0 010 4zM10 18a2 2 0 110-4 2 2 0 010 4z" />
                               </svg>
                             </button>
+                            
                             {openMenuFor === patient.id && (
-                                <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-100 rounded-lg shadow-xl z-20 py-1 overflow-hidden ring-1 ring-black ring-opacity-5">
+                              <>
+                                {/* Backdrop to close menu when clicking outside */}
+                                <div 
+                                  className="fixed inset-0 z-10" 
+                                  onClick={() => setOpenMenuFor(null)}
+                                ></div>
+                                
+                                <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-100 rounded-xl shadow-2xl z-20 py-2 overflow-hidden ring-1 ring-black ring-opacity-5 animate-fade-in animate-zoom-in origin-top-right">
+                                  <div className="px-4 py-2 border-b border-gray-50 mb-1">
+                                    <p className="text-xs font-semibold text-gray-400 uppercase tracking-wider">Thao tác nhanh</p>
+                                  </div>
+                                  
                                   <button 
                                     onClick={() => { fetchMedicalRecords(patient); setOpenMenuFor(null); }} 
-                                    className="flex items-center w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                                    className="flex items-center w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-all duration-200 group"
                                   >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
-                                    </svg>
-                                    Xem bệnh án
+                                    <div className="bg-blue-100 p-2 rounded-lg mr-3 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                      </svg>
+                                    </div>
+                                    <span className="font-medium">Xem bệnh án</span>
                                   </button>
+                                  
                                   <button 
                                     onClick={() => { setModalPatientId(patient.id); setOpenMenuFor(null); }} 
-                                    className="flex items-center w-full text-left px-4 py-2.5 text-sm text-gray-700 hover:bg-blue-50 hover:text-blue-700 transition-colors"
+                                    className="flex items-center w-full text-left px-4 py-3 text-sm text-gray-700 hover:bg-green-50 hover:text-green-700 transition-all duration-200 group"
                                   >
-                                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-3 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
-                                    </svg>
-                                    Tạo bệnh án
+                                    <div className="bg-green-100 p-2 rounded-lg mr-3 group-hover:bg-green-600 group-hover:text-white transition-colors">
+                                      <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
+                                      </svg>
+                                    </div>
+                                    <span className="font-medium">Tạo bệnh án mới</span>
                                   </button>
                                 </div>
+                              </>
                             )}
                           </div>
                         </div>
@@ -454,10 +485,14 @@ const DoctorPatients = () => {
                       : `${DOCTOR_API_BASE_URL}/patients/${modalPatientId}/medical_records`;
                     
                     const method = editingRecordId ? 'PUT' : 'POST';
+                    const token = localStorage.getItem('token');
 
                     const resp = await fetch(url, {
                       method: method,
-                      headers: { 'Content-Type': 'application/json' },
+                      headers: { 
+                        'Content-Type': 'application/json',
+                        ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+                      },
                       body: JSON.stringify(payload)
                     });
                     if (resp.ok) {
