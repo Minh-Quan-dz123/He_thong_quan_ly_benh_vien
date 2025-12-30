@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 
 const DOCTOR_API_BASE_URL = import.meta.env.VITE_DOCTOR_API_BASE_URL || 'http://localhost:8001';
 

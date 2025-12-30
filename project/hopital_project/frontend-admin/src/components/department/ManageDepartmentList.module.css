@@ -1,0 +1,36 @@
+.departmentTable {
+  width: 100%;
+  border-collapse: collapse;
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+}
+
+.departmentTable th {
+  background: #1e3a8a;
+  color: white;
+  padding: 12px;
+  font-size: 13px;
+  text-transform: uppercase;
+}
+
+.departmentTable td {
+  padding: 12px;
+  font-size: 14px;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.row {
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.row:hover {
+  background: #eff6ff;
+}
+
+.name {
+  font-weight: 600;
+  color: #1e40af;
+}

@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link} from 'react-router-dom';
 import { specialtiesData } from './Specialties';
 
 interface NavbarProps {
@@ -19,7 +19,7 @@ const Navbar = ({ onSignInClick, isLoggedIn, username, role, onLogout }: NavbarP
   const specialtyDropdownRef = useRef<HTMLDivElement>(null);
   const guideDropdownRef = useRef<HTMLDivElement>(null);
   const appointmentDropdownRef = useRef<HTMLDivElement>(null);
-  const navigate = useNavigate();
+  //const navigate = useNavigate();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {

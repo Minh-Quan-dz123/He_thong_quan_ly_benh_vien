@@ -1,0 +1,134 @@
+.createDeptWrapper {
+  max-width: 900px;
+  margin: 24px auto;
+  padding: 32px;
+  background: #ffffff;
+  border-radius: 14px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+}
+
+.createDeptTitle {
+  font-size: 26px;
+  font-weight: 700;
+  color: #1e3a8a;
+  margin-bottom: 28px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 12px;
+}
+
+.createDeptForm {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.createDeptLabel {
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.createDeptInput {
+  padding: 10px 12px;
+  font-size: 14px;
+  border-radius: 8px;
+  border: 1.5px solid #d1d5db;
+  transition: 0.2s;
+}
+
+.createDeptInput:focus {
+  outline: none;
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.createDeptHeadDoctor {
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: #f1f5f9;
+  border: 1px dashed #cbd5f5;
+  color: #1e3a8a;
+}
+
+.createDeptPickBtn {
+  width: fit-content;
+  padding: 10px 18px;
+  border-radius: 8px;
+  background: #e0e7ff;
+  color: #1e3a8a;
+  font-weight: 600;
+  border: none;
+  cursor: pointer;
+}
+
+.createDeptPickBtn:hover {
+  background: #c7d2fe;
+}
+
+.createDeptDoctorTable {
+  margin-top: 12px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #e5e7eb;
+}
+
+.createDeptDoctorTable table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 14px;
+}
+
+.createDeptDoctorTable thead {
+  background: #2563eb;
+  color: white;
+}
+
+.createDeptDoctorTable th,
+.createDeptDoctorTable td {
+  padding: 10px 12px;
+}
+
+.createDeptDoctorTable tbody tr {
+  cursor: pointer;
+}
+
+.createDeptDoctorTable tbody tr:hover {
+  background: #f1f5ff;
+}
+
+.createDeptActions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+.createDeptSubmitBtn {
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: 8px;
+  background: linear-gradient(135deg, #2563eb, #1e40af);
+  color: white;
+  border: none;
+  cursor: pointer;
+}
+
+.createDeptSubmitBtn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
+}
+
+.createDeptSubmitBtn:disabled {
+  background: #94a3b8;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.createDeptLoading {
+  padding: 16px;
+  text-align: center;
+  color: #64748b;
+}

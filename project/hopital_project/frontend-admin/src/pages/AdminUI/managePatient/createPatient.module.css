@@ -1,0 +1,86 @@
+.pageContainer {
+  padding: 20px;
+  background-color: #f5faff; /* nền xanh nhạt bệnh viện */
+  min-height: 100vh;
+}
+
+.header {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.header h2 {
+  color: #005f99; /* xanh dương đậm */
+}
+
+.formContainer {
+  max-width: 900px;
+  margin: 0 auto;
+  background: #ffffff;
+  padding: 25px 30px;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+}
+
+.section {
+  margin-bottom: 25px;
+}
+
+.section h3 {
+  color: #0077cc;
+  margin-bottom: 15px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 5px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+}
+
+.fieldGroup label {
+  margin-bottom: 5px;
+  font-weight: 500;
+}
+
+.fieldGroup input,
+.fieldGroup select {
+  padding: 8px 10px;
+  border: 1px solid #c0c0c0;
+  border-radius: 6px;
+  font-size: 14px;
+}
+
+.fieldGroup input:focus,
+.fieldGroup select:focus {
+  outline: none;
+  border-color: #0077cc;
+  box-shadow: 0 0 3px #0077cc;
+}
+
+.submitContainer {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.submitContainer button {
+  background-color: #0077cc;
+  color: white;
+  font-weight: bold;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  font-size: 16px;
+  transition: 0.3s;
+}
+
+.submitContainer button:hover {
+  background-color: #005f99;
+}
+
+.submitContainer button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

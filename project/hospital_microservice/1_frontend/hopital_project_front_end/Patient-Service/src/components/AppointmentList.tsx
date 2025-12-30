@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, Button } from '@mui/material';
 
@@ -105,6 +105,7 @@ const AppointmentList = ({ currentUser, showToastMsg }: AppointmentListProps) =>
       if (showToastMsg) {
         showToastMsg("Lỗi", "Đã xảy ra lỗi khi hủy lịch khám.", 'error');
       } else {
+        error;// thêm cho đỡ nỗi
         alert("Đã xảy ra lỗi khi hủy lịch khám.");
       }
     } finally {

@@ -1,0 +1,92 @@
+.container {
+  width: 260px;
+  background-color: #ffffff;
+  border-right: 1px solid #e5e7eb;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  transition: width 0.25s ease;
+}
+
+.collapsed {
+  width: 72px;
+}
+
+/* ===== HOME BUTTON ===== */
+.homeButton {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background-color: #2563eb;
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.homeButton:hover {
+  background-color: #1d4ed8;
+}
+
+.homeIcon {
+  font-size: 18px;
+}
+
+/* Divider */
+.divider {
+  height: 1px;
+  background-color: #e5e7eb;
+  margin: 16px 0;
+}
+
+/* ===== MENU ===== */
+.menuList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.menuItem {
+  padding: 12px;
+  border-radius: 10px;
+  border: none;
+  background-color: transparent;
+  text-align: left;
+  cursor: pointer;
+  font-size: 14px;
+  color: #374151;
+  transition: background-color 0.2s ease;
+}
+
+.menuItem:hover {
+  background-color: #f1f5f9;
+}
+
+.activeMenuItem {
+  background-color: #e0e7ff;
+  color: #1d4ed8;
+  font-weight: 600;
+}
+
+/* ===== MENU TOGGLE ===== */
+.menuToggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: none;
+  background-color: #f3f4f6;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.menuToggle:hover {
+  background-color: #e5e7eb;
+}
