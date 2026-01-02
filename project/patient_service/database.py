@@ -2,7 +2,8 @@ from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 import certifi
 
-MONGO_URI = "mongodb+srv://ngoquan:ngoquan@cluster0.sjfre6b.mongodb.net/"
+#MONGO_URI = "mongodb+srv://ngoquan:ngoquan@cluster0.sjfre6b.mongodb.net/"
+MONGO_URI = "mongodb+srv://quanta2309ppvDB:20225386Quan.TM225386@cluster0.ga1mv8i.mongodb.net/admin_service?appName=Cluster0"
 DB_NAME = "hospital_db"
 
 class Database:
