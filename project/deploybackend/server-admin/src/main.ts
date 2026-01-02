@@ -1,7 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import * as fs from 'fs';
+
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,7 +18,8 @@ async function bootstrap() {
     }));
 
     app.enableCors({
-        origin: "http://localhost:5173", // bên front end
+       
+        origin:'https://taminhquan2k4.id.vn',
         credentials: true,
         methods: ['GET', 'POST', 'PUT', 'PATCH',  'DELETE', 'OPTIONS'],
         allowedHeaders: ['Content-Type', 'Authorization'],
