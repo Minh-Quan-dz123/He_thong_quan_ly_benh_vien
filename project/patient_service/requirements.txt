@@ -9,3 +9,4 @@ email-validator
 twilio
 mangum
 gunicorn
+python-jose[cryptography]
