@@ -25,7 +25,9 @@ async function bootstrap() {
     });
 
 
-  await app.listen(3000, '0.0.0.0'); // bind tất cả interface IPv4);
+  const port = process.env.PORT || 3000;
+  await app.listen(port);
+  
   console.log(`backend đang chạy tại: ${await app.getUrl()}`);
 
 }
