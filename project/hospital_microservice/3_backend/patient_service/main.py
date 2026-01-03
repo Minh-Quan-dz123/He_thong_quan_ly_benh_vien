@@ -20,25 +20,48 @@ from schemas import MedicalRecordCreate, MedicalRecordResponse
 
 app = FastAPI(title="Patient Service API")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+async def get_current_user(request: Request):
+    """Authorization dependency for patient endpoints.
+    Prefer forwarded headers from gateway (`x-user-id`, `x-user-role[s]`).
+    Fallback to Authorization: Bearer <token> and decode locally.
+    """
+    forwarded_user = request.headers.get("x-user-id") or request.headers.get("x-user")
+    forwarded_role = request.headers.get("x-user-role") or request.headers.get("x-user-roles")
+    username = None
+    role = None
 
-async def get_current_user(token: str = Depends(oauth2_scheme)):
-    payload = decode_access_token(token)
-    if not payload:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    username: str = payload.get("sub")
-    role: str = payload.get("role")
+    if forwarded_user:
+        username = forwarded_user
+        role = (forwarded_role or "patient").lower()
+    else:
+        auth = request.headers.get("authorization")
+        if not auth:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        parts = auth.split()
+        if len(parts) != 2 or parts[0].lower() != "bearer":
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid authorization header")
+        token = parts[1]
+        payload = decode_access_token(token)
+        if not payload:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        username = payload.get("sub")
+        role = payload.get("role")
+
     if username is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Could not validate credentials",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    
+
     if role == 'doctor':
         doctor_client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())
         doctor_db = doctor_client[DOCTOR_DB_NAME]
@@ -46,7 +69,7 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         doctor_client.close()
     else:
         user = db.get_db().patients.find_one({"username": username})
-        
+
     if user is None:
         raise HTTPException(status_code=404, detail="User not found")
     return user

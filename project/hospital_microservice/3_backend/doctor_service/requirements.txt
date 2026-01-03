@@ -1,0 +1,10 @@
+fastapi
+uvicorn
+pymongo[srv]
+certifi
+passlib[bcrypt]
+bcrypt
+python-jose[cryptography]
+pydantic
+python-dotenv
+cryptography

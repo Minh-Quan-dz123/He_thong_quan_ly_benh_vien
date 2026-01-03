@@ -8,3 +8,5 @@ cryptography
 email-validator
 twilio
 mangum
+bcrypt
+python-jose[cryptography]

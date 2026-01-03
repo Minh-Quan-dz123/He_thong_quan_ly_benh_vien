@@ -17,23 +17,45 @@ from datetime import datetime
 
 app = FastAPI(title="Doctor Service API")
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+async def get_current_doctor(request: Request):
+    """Authorization dependency for doctor endpoints.
+    Prefer forwarded headers from gateway (`x-user-id`, `x-user-role[s]`).
+    Fallback to Authorization: Bearer <token> and decode locally.
+    """
+    # Check forwarded headers first (gateway should set these after verifying JWT)
+    forwarded_user = request.headers.get("x-user-id") or request.headers.get("x-user")
+    forwarded_role = request.headers.get("x-user-role") or request.headers.get("x-user-roles")
+    username = None
+    role = None
 
-async def get_current_doctor(token: str = Depends(oauth2_scheme)):
-    payload = decode_access_token(token)
-    if not payload or payload.get("role") != "doctor":
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
-    username: str = payload.get("sub")
-    if username is None:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Could not validate credentials",
-            headers={"WWW-Authenticate": "Bearer"},
-        )
+    if forwarded_user:
+        username = forwarded_user
+        role = (forwarded_role or "doctor").lower()
+    else:
+        # Fallback: parse Authorization header
+        auth = request.headers.get("authorization")
+        if not auth:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Missing credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        parts = auth.split()
+        if len(parts) != 2 or parts[0].lower() != "bearer":
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid authorization header")
+        token = parts[1]
+        payload = decode_access_token(token)
+        if not payload or payload.get("role") != "doctor":
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Could not validate credentials",
+                headers={"WWW-Authenticate": "Bearer"},
+            )
+        username = payload.get("sub")
+
+    if not username:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid credentials")
+
     doctor = db.get_db().doctors.find_one({"username": username})
     if doctor is None:
         raise HTTPException(status_code=404, detail="Doctor not found")
@@ -173,17 +195,21 @@ async def update_doctor(doctor_id: str, doctor_update: DoctorUpdate):
         raise HTTPException(status_code=500, detail=str(e))
 
 
-@app.get("/doctors", response_model=list[DoctorResponse])
-async def get_all_doctors():
+@app.get("/doctors", response_model=list[DoctorResponse], dependencies=[])
+async def get_all_doctors(specialty: Optional[str] = None):
     try:
         docs = []
-        cursor = db.get_db().doctors.find()
+        query = {}
+        if specialty:
+            query["specialty"] = specialty
+        cursor = db.get_db().doctors.find(query)
         for d in cursor:
             docs.append(DoctorResponse(
                 id=str(d["_id"]), 
                 username=d.get("username",""), 
                 name=d.get("name",""), 
                 phone=d.get("phone",""), 
+                gender=d.get("gender"),
                 role='doctor',
                 specialty=d.get("specialty")
             ))
@@ -290,8 +316,19 @@ async def get_medical_records(patient_id: str):
             raise HTTPException(status_code=404, detail="Patient not found")
         
         records = patient.get("medical_records", [])
+        # Sort records by created_at descending (newest first). created_at is stored as ISO string.
+        def _parse_created(r):
+            ca = r.get('created_at')
+            if not ca:
+                return datetime.min
+            try:
+                return datetime.fromisoformat(ca)
+            except Exception:
+                return datetime.min
+
+        records_sorted = sorted(records, key=_parse_created, reverse=True)
         client.close()
-        
+
         return [MedicalRecordResponse(
             id=r.get('_id'),
             diagnosis=r.get('diagnosis'),
@@ -302,7 +339,7 @@ async def get_medical_records(patient_id: str):
             doctor_name=r.get('doctor_name'),
             doctor_specialty=r.get('doctor_specialty'),
             edit_history=r.get('edit_history', [])
-        ) for r in records]
+        ) for r in records_sorted]
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
