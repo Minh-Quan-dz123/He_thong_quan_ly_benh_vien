@@ -4,6 +4,7 @@ import hashlib
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
+import os
 
 # Password hashing
 # Use pbkdf2_sha256 as the default scheme to avoid bcrypt's 72-byte limit
@@ -11,7 +12,8 @@ from typing import Optional
 pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], default="pbkdf2_sha256", deprecated="auto")
 
 # JWT Configuration
-SECRET_KEY = "your-jwt-secret" # In production, use a secure environment variable
+#SECRET_KEY = "your-jwt-secret" # In production, use a secure environment variable
+SECRET_KEY = os.getenv("SECRET_KEY", "your-jwt-secret")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 

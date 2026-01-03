@@ -4,6 +4,7 @@ from cryptography.fernet import Fernet
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
+import os  # để đọc biến môi trường
 
 # JWT Configuration
 SECRET_KEY = "your-jwt-secret"
@@ -11,7 +12,8 @@ ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 120
 
 # Encryption key (Must match doctor_service)
-ENCRYPTION_KEY = b'05MynJyhfcFt3WACEP4obL7fFMOr4WEPIbp-no9GOz4='
+#ENCRYPTION_KEY = b'05MynJyhfcFt3WACEP4obL7fFMOr4WEPIbp-no9GOz4='
+SECRET_KEY = os.getenv("SECRET_KEY", "your-jwt-secret") 
 cipher_suite = Fernet(ENCRYPTION_KEY)
 
 def verify_password(plain_password, hashed_password):
