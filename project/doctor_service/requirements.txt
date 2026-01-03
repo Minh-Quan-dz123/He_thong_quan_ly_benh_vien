@@ -1,10 +1,10 @@
 fastapi
-uvicorn[standard]
-pymongo
+uvicorn
+pymongo[srv]
+certifi
 passlib[bcrypt]
+bcrypt
+python-jose[cryptography]
 pydantic
 python-dotenv
 cryptography
-email-validator
-twilio
-python-jose[cryptography]

@@ -6,10 +6,12 @@ from datetime import datetime, timedelta
 from typing import Optional
 
 # Password hashing
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+# Use pbkdf2_sha256 as the default scheme to avoid bcrypt's 72-byte limit
+# but keep bcrypt in the list to verify existing bcrypt hashes.
+pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], default="pbkdf2_sha256", deprecated="auto")
 
 # JWT Configuration
-SECRET_KEY = "your-secret-key-here" # In production, use a secure environment variable
+SECRET_KEY = "your-jwt-secret" # In production, use a secure environment variable
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -18,6 +20,11 @@ ENCRYPTION_KEY = b'05MynJyhfcFt3WACEP4obL7fFMOr4WEPIbp-no9GOz4='
 cipher_suite = Fernet(ENCRYPTION_KEY)
 
 def verify_password(plain_password, hashed_password):
+    # Bcrypt has a 72-byte limit. Newer versions of the bcrypt library throw ValueError
+    # if the password exceeds this limit. We truncate it to 72 bytes for bcrypt hashes
+    # to maintain compatibility and avoid the crash.
+    if hashed_password.startswith(("$2a$", "$2b$", "$2y$")) and len(plain_password) > 72:
+        plain_password = plain_password[:72]
     return pwd_context.verify(plain_password, hashed_password)
 
 

@@ -69,6 +69,7 @@ class DoctorResponse(BaseModel):
     username: str
     name: str
     phone: str
+    gender: Optional[str] = None
     role: Optional[str] = None
     specialty: Optional[str] = None
     access_token: Optional[str] = None

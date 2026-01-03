@@ -3,8 +3,7 @@ from pymongo.errors import ConnectionFailure
 import certifi
 
 # Use same URI and DB as patient_service
-#MONGO_URI = "mongodb+srv://ngoquan:ngoquan@cluster0.sjfre6b.mongodb.net/"
-MONGO_URI = "mongodb+srv://quanta2309ppvDB:20225386Quan.TM225386@cluster0.ga1mv8i.mongodb.net/admin_service?appName=Cluster0"
+MONGO_URI = "mongodb+srv://ngoquan:ngoquan@cluster0.sjfre6b.mongodb.net/"
 # Use a separate database for doctors
 DB_NAME = "hospital_doctors_db"
 
