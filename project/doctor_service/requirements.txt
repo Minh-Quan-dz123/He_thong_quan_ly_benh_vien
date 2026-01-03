@@ -8,3 +8,9 @@ python-jose[cryptography]
 pydantic
 python-dotenv
 cryptography
+
+python-multipart
+pandas
+openpyxl
+pydantic-settings
+dnspython
