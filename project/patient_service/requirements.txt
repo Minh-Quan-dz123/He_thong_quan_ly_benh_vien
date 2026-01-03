@@ -10,3 +10,9 @@ twilio
 mangum
 bcrypt
 python-jose[cryptography]
+
+python-multipart
+pandas
+openpyxl
+pydantic-settings
+dnspython
