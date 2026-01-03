@@ -1,7 +1,7 @@
 from pymongo import MongoClient
 import certifi
 
-MONGO_URI = "mongodb+srv://ngoquan:ngoquan@cluster0.sjfre6b.mongodb.net/?retryWrites=true&w=majority"
+MONGO_URI = "mongodb+srv://quanta2309ppvDB:20225386Quan%2ETM225386@cluster0.ga1mv8i.mongodb.net/?appName=Cluster0"
 DB_NAME = "hospital_doctors_db"
 
 client = MongoClient(MONGO_URI, tlsCAFile=certifi.where())

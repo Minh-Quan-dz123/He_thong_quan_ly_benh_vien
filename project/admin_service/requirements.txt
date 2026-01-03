@@ -7,3 +7,7 @@ python-jose[cryptography]
 pydantic
 pydantic-settings
 dnspython
+
+python-multipart
+pandas
+openpyxl
