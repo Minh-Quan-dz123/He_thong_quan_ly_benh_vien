@@ -7,7 +7,7 @@ from database import db, MONGO_URI
 import certifi
 from pymongo import MongoClient
 DOCTOR_DB_NAME = "hospital_doctors_db"
-from schemas import UserRegister, UserResponse, UserLogin, OTPRequest, OTPVerify, ResetPassword, UserDetailResponse, UserUpdate, AppointmentCreate, AppointmentResponse
+from schemas import UserRegister, UserResponse, UserLogin, OTPVerify, ResetPassword, UserDetailResponse, UserUpdate, AppointmentCreate, AppointmentResponse
 from utils import get_password_hash, hash_document_number, encrypt_document_number, decrypt_document_number, verify_password, create_access_token, decode_access_token
 # from sms_service import send_sms
 from pymongo.errors import DuplicateKeyError
