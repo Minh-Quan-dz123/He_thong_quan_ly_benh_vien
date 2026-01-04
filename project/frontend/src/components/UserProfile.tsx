@@ -75,8 +75,9 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
     setIsEditing(true);
   };
 
-      const handleSave = async () => {
+  const handleSave = async () => {
     try {
+      
       const base = API_BASE_URL;
       const prefix = role === 'doctor' ? 'doctor' : 'patient';
       const path = role === 'doctor' ? 'doctors' : 'patients';

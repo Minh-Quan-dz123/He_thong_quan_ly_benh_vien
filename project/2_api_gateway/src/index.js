@@ -91,6 +91,10 @@ app.use('/admin/login', createProxy(ADMIN_SERVICE_URL));
 app.use('/doctor/login', createProxy(DOCTOR_SERVICE_URL));
 app.use('/patient/login', createProxy(PATIENT_SERVICE_URL));
 
+app.use('/patient/register', createProxy(PATIENT_SERVICE_URL));
+app.use('/patient/forgot-password', createProxy(PATIENT_SERVICE_URL));
+app.use('/doctor/register', createProxy(DOCTOR_SERVICE_URL));
+
 // Allow unauthenticated access to public guides (served by admin service)
 app.use('/admin/guides', createProxy(ADMIN_SERVICE_URL));
 
