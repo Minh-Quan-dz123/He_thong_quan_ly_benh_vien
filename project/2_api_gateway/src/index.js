@@ -24,7 +24,7 @@ app.use(express.json());
 // Basic rate limiter (tweak for your needs)
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 1000 // limit each IP to 100 requests per windowMs
+  max: 3000 // limit each IP to 3000 requests per windowMs
 });
 app.use(limiter);
 
@@ -36,20 +36,8 @@ function createProxy(target) {
   return createProxyMiddleware({
     target,
     changeOrigin: true,
-    // ---------1 thêm để check lỗi--------------
-    proxyTimeout: 10000,
-    timeout: 20000,
-    // ---------1 thêm để check lỗi--------------
-
     pathRewrite: (path, req) => path.replace(/^\/[^/]+/, ''),
     onProxyReq: (proxyReq, req, res) => {
-      // ---------2 thêm để check lỗi--------------
-      try {
-        const proxiedPath = req.originalUrl.replace(/^\/[^/]+/, '');
-        console.log(`[gateway] Proxying ${req.method} ${req.originalUrl} -> ${target}${proxiedPath}`);
-      } catch (e) {}
-      // ---------2 thêm để check lỗi--------------
-      
       // Forward original Authorization header (if present)
       if (req.headers.authorization) {
         proxyReq.setHeader('authorization', req.headers.authorization);
@@ -77,25 +65,6 @@ function createProxy(target) {
           // ignore write errors
         }
       }
-    },
-    onProxyRes: (proxyRes, req, res) => {
-      try {
-        const proxiedPath = req.originalUrl.replace(/^\/[^/]+/, '');
-        console.log(`[gateway] Response from ${target}${proxiedPath} -> ${proxyRes.statusCode}`);
-      } catch (e) {}
-    },
-    onError: (err, req, res) => {
-      console.error('[gateway] Proxy error ->', target, err && err.message);
-      // If response headers already sent, just end
-      if (res.headersSent) return;
-      // Prefer JSON error responses to avoid HTML pages from the platform
-      try {
-        res.status(502).json({ error: 'Bad gateway', details: err && err.message });
-      } catch (e) {
-        // fallback plain text
-        try { res.status(502).send('Bad gateway'); } catch (e) {}
-      }
-    }
     }
   });
 }
