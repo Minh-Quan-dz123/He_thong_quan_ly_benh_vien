@@ -17,6 +17,7 @@ const DoctorPatients = () => {
   const [patients, setPatients] = useState<PatientItem[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
   const [totalPatients, setTotalPatients] = useState(0);
   const [openMenuFor, setOpenMenuFor] = useState<string | null>(null);
   const [modalPatientId, setModalPatientId] = useState<string | null>(null);
@@ -34,11 +35,11 @@ const DoctorPatients = () => {
     follow_up_date: '' 
   });
 
-  const fetchPatients = useCallback(async (q: string, page: number) => {
+  const fetchPatients = useCallback(async (q: string, page: number, limit: number) => {
     setIsLoading(true);
     try {
       const token = localStorage.getItem('token');
-      const resp = await fetch(`${DOCTOR_API_BASE_URL}/patients/search?query=${encodeURIComponent(q)}&page=${page}&limit=10`, {
+      const resp = await fetch(`${DOCTOR_API_BASE_URL}/patients/search?query=${encodeURIComponent(q)}&page=${page}&limit=${limit}`, {
         headers: token ? { 'Authorization': `Bearer ${token}` } : {}
       });
       if (resp.ok) {
@@ -115,19 +116,19 @@ const DoctorPatients = () => {
   useEffect(() => {
     const t = setTimeout(() => {
       setCurrentPage(1);
-      fetchPatients(searchTerm.trim(), 1);
+      fetchPatients(searchTerm.trim(), 1, itemsPerPage);
     }, 300);
     return () => clearTimeout(t);
-  }, [searchTerm, fetchPatients]);
+  }, [searchTerm, fetchPatients, itemsPerPage]);
 
   // fetch on page change
   useEffect(() => {
     if (currentPage > 1) {
-      fetchPatients(searchTerm.trim(), currentPage);
+      fetchPatients(searchTerm.trim(), currentPage, itemsPerPage);
     }
-  }, [currentPage, fetchPatients]);
+  }, [currentPage, fetchPatients, itemsPerPage]);
 
-  const totalPages = Math.ceil(totalPatients / 10);
+  const totalPages = Math.ceil(totalPatients / itemsPerPage);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
@@ -261,70 +262,70 @@ const DoctorPatients = () => {
         </ul>
 
         {/* Pagination Controls */}
-        {totalPages > 1 && (
-          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex items-center justify-between">
-            <div className="flex-1 flex justify-between sm:hidden">
-              <button
-                onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                disabled={currentPage === 1}
-                className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-              >
-                Trước
-              </button>
-              <button
-                onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                disabled={currentPage === totalPages}
-                className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50"
-              >
-                Sau
-              </button>
-            </div>
-            <div className="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm text-gray-700">
-                  Hiển thị <span className="font-medium">{(currentPage - 1) * 10 + 1}</span> đến <span className="font-medium">{Math.min(currentPage * 10, totalPatients)}</span> trong <span className="font-medium">{totalPatients}</span> bệnh nhân
-                </p>
+        {totalPatients > 0 && (
+          <div className="px-6 py-4 bg-gray-50 border-t border-gray-200 flex flex-col sm:flex-row items-center justify-between space-y-4 sm:space-y-0">
+            <div className="flex items-center space-x-4">
+              <div className="flex items-center space-x-2 text-sm text-gray-600">
+                <span>Hiển thị</span>
+                <select
+                  value={itemsPerPage}
+                  onChange={(e) => {
+                    setItemsPerPage(Number(e.target.value));
+                    setCurrentPage(1);
+                  }}
+                  className="border border-gray-300 rounded-md px-2 py-1 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                  <option value={5}>5</option>
+                  <option value={10}>10</option>
+                  <option value={20}>20</option>
+                  <option value={50}>50</option>
+                </select>
+                <span>kết quả mỗi trang</span>
               </div>
-              <div>
-                <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+              <p className="hidden md:block text-sm text-gray-700">
+                Hiển thị <span className="font-medium">{(currentPage - 1) * itemsPerPage + 1}</span> đến <span className="font-medium">{Math.min(currentPage * itemsPerPage, totalPatients)}</span> trong <span className="font-medium">{totalPatients}</span> bệnh nhân
+              </p>
+            </div>
+            
+            {totalPages > 1 && (
+              <nav className="relative z-0 inline-flex rounded-md shadow-sm -space-x-px" aria-label="Pagination">
+                <button
+                  onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                >
+                  <span className="sr-only">Trước</span>
+                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+                
+                {[...Array(totalPages)].map((_, i) => (
                   <button
-                    onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
-                    disabled={currentPage === 1}
-                    className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                    key={i + 1}
+                    onClick={() => setCurrentPage(i + 1)}
+                    className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
+                      currentPage === i + 1
+                        ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
+                        : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
+                    }`}
                   >
-                    <span className="sr-only">Trước</span>
-                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
+                    {i + 1}
                   </button>
-                  
-                  {[...Array(totalPages)].map((_, i) => (
-                    <button
-                      key={i + 1}
-                      onClick={() => setCurrentPage(i + 1)}
-                      className={`relative inline-flex items-center px-4 py-2 border text-sm font-medium ${
-                        currentPage === i + 1
-                          ? 'z-10 bg-blue-50 border-blue-500 text-blue-600'
-                          : 'bg-white border-gray-300 text-gray-500 hover:bg-gray-50'
-                      }`}
-                    >
-                      {i + 1}
-                    </button>
-                  ))}
+                ))}
 
-                  <button
-                    onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
-                    disabled={currentPage === totalPages}
-                    className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
-                  >
-                    <span className="sr-only">Sau</span>
-                    <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </button>
-                </nav>
-              </div>
-            </div>
+                <button
+                  onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                >
+                  <span className="sr-only">Sau</span>
+                  <svg className="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                    <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
+                  </svg>
+                </button>
+              </nav>
+            )}
           </div>
         )}
       </div>

@@ -57,4 +57,9 @@ def encrypt_document_number(document_number: str) -> str:
 
 def decrypt_document_number(encrypted_document_number: str) -> str:
     """Decrypts the document number."""
-    return cipher_suite.decrypt(encrypted_document_number.encode()).decode()
+    if not encrypted_document_number:
+        return ""
+    try:
+        return cipher_suite.decrypt(encrypted_document_number.encode()).decode()
+    except Exception:
+        return "********" # Return placeholder if decryption fails

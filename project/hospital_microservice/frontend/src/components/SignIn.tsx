@@ -195,16 +195,18 @@ const SignIn = ({ isOpen, onClose, onLogin, onRegisterClick, onForgotPasswordCli
               {isLoading ? 'Đang xử lý...' : 'Đăng nhập'}
             </button>
 
-            <div className="mt-6 text-center text-sm text-gray-500">
-              Chưa có tài khoản?{' '}
-              <button 
-                type="button"
-                onClick={onRegisterClick}
-                className="text-blue-600 hover:text-blue-500 font-medium"
-              >
-                Đăng ký ngay
-              </button>
-            </div>
+            {role === 'patient' && (
+              <div className="mt-6 text-center text-sm text-gray-500">
+                Chưa có tài khoản?{' '}
+                <button 
+                  type="button"
+                  onClick={onRegisterClick}
+                  className="text-blue-600 hover:text-blue-500 font-medium"
+                >
+                  Đăng ký ngay
+                </button>
+              </div>
+            )}
           </form>
         </div>
       </div>

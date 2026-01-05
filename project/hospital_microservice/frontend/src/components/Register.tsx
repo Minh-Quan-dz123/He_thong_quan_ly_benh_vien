@@ -20,7 +20,6 @@ const Register = ({ isOpen, onClose, onRegister, onSignInClick }: RegisterProps)
     gender: 'Male',
     phone: '',
     role: 'patient',
-    specialty: '',
     documentType: 'CCCD',
     documentNumber: '',
     address: '',
@@ -57,9 +56,6 @@ const Register = ({ isOpen, onClose, onRegister, onSignInClick }: RegisterProps)
     }
     if (!/^\d+$/.test(formData.documentNumber)) {
       newErrors.documentNumber = "Số giấy tờ chỉ được chứa số";
-    }
-    if (formData.role === 'doctor' && !formData.specialty) {
-      newErrors.specialty = "Khoa/Chuyên khoa là bắt buộc cho bác sĩ";
     }
 
     if (Object.keys(newErrors).length > 0) {
@@ -126,31 +122,6 @@ const Register = ({ isOpen, onClose, onRegister, onSignInClick }: RegisterProps)
           
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Vai trò đăng ký <span className="text-red-500">*</span></label>
-                  <select
-                    name="role"
-                    className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                    value={formData.role}
-                    onChange={handleChange}
-                  >
-                    <option value="patient">Bệnh nhân</option>
-                    <option value="doctor">Bác sĩ</option>
-                  </select>
-                </div>
-                {formData.role === 'doctor' && (
-                  <div className="md:col-span-2">
-                    <label className="block text-sm font-medium text-gray-700 mb-1">Khoa / Chuyên khoa <span className="text-red-500">*</span></label>
-                    <input
-                      type="text"
-                      name="specialty"
-                      required
-                      className="block w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500"
-                      value={formData.specialty}
-                      onChange={handleChange}
-                    />
-                  </div>
-                )}
               {/* Account Info */}
               <div className="md:col-span-2">
                 <h3 className="text-lg font-medium text-gray-900 mb-2 border-b pb-2">Thông tin tài khoản</h3>
