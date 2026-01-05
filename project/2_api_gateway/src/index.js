@@ -32,7 +32,7 @@ const limiter = rateLimit({
   // 1 thêm: bỏ qua optiones và health check
   skip: (req) => req.method === 'OPTIONS'
 });
-//app.use(limiter);
+app.use(limiter);
 
 // Health
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
@@ -60,7 +60,7 @@ function createProxy(target) {
         } catch (e) {}
       }
       // If body has been parsed by express.json(), forward it to the proxied service
-      /* ------2 bỏ đoạn này ----------
+      
       if (req.body && Object.keys(req.body).length) {
         const bodyData = JSON.stringify(req.body);
         // set content-type and content-length (overwrite if necessary)
@@ -72,7 +72,7 @@ function createProxy(target) {
           // ignore write errors
         }
       }
-        ------2 bỏ đoạn này ---------- */
+        
     }
   });
 }
