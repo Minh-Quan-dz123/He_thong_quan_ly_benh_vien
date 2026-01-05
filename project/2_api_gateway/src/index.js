@@ -32,7 +32,7 @@ const limiter = rateLimit({
   // 1 thêm: bỏ qua optiones và health check
   skip: (req) => req.method === 'OPTIONS'
 });
-app.use(limiter);
+//app.use(limiter);
 
 // Health
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
