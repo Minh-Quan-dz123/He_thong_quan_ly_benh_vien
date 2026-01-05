@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Search, Trash2, Filter, ChevronLeft, ChevronRight, UserPlus, Upload, FileSpreadsheet, X, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Search, Trash2, Filter, ChevronLeft, ChevronRight, UserPlus, Upload, FileSpreadsheet, X, AlertCircle } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5080';
@@ -79,10 +79,20 @@ const AdminDoctorManagement = () => {
     try {
       setIsSubmitting(true);
       const { confirmPassword, ...submitData } = formData;
+      // -----1 thêm ----
+      const headers: Record<string, string> = {
+        'Content-Type': 'application/json',
+      };
+      // ----1 end -----
+
       const token = localStorage.getItem('token');
+
+      // ---2 thêm ----
+      if (token) headers['Authorization'] = `Bearer ${token}`;
+      // ----2 end -----
       const response = await fetch(`${ADMIN_API_BASE_URL}/doctors/register`, {
         method: 'POST',
-        headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { Authorization: `Bearer ${token}` } : {}),
+        headers, // Object.assign({ 'Content-Type': 'application/json' }, token ? { Authorization: `Bearer ${token}` } : {}),
         body: JSON.stringify(submitData)
       });
 

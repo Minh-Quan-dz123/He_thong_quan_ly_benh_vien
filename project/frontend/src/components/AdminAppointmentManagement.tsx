@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Calendar, Clock, User, Phone, FileText, X, Info, ChevronLeft, ChevronRight } from 'lucide-react';
 import toast from 'react-hot-toast';
 
