@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+//import { Link, useNavigate } from 'react-router-dom';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5080';
 const DOCTOR_API_BASE_URL = import.meta.env.VITE_DOCTOR_API_BASE_URL || `${API_BASE_URL}/doctor`;
@@ -195,16 +195,18 @@ const SignIn = ({ isOpen, onClose, onLogin, onRegisterClick, onForgotPasswordCli
               {isLoading ? 'Đang xử lý...' : 'Đăng nhập'}
             </button>
 
-            <div className="mt-6 text-center text-sm text-gray-500">
-              Chưa có tài khoản?{' '}
-              <button 
-                type="button"
-                onClick={onRegisterClick}
-                className="text-blue-600 hover:text-blue-500 font-medium"
-              >
-                Đăng ký ngay
-              </button>
-            </div>
+            {role === 'patient' && (
+              <div className="mt-6 text-center text-sm text-gray-500">
+                Chưa có tài khoản?{' '}
+                <button 
+                  type="button"
+                  onClick={onRegisterClick}
+                  className="text-blue-600 hover:text-blue-500 font-medium"
+                >
+                  Đăng ký ngay
+                </button>
+              </div>
+            )}
           </form>
         </div>
       </div>

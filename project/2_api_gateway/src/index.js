@@ -90,7 +90,6 @@ function gatewayAuth(req, res, next) {
 app.use('/admin/login', createProxy(ADMIN_SERVICE_URL));
 app.use('/doctor/login', createProxy(DOCTOR_SERVICE_URL));
 app.use('/patient/login', createProxy(PATIENT_SERVICE_URL));
-
 app.use('/patient/register', createProxy(PATIENT_SERVICE_URL));
 app.use('/patient/forgot-password', createProxy(PATIENT_SERVICE_URL));
 app.use('/doctor/register', createProxy(DOCTOR_SERVICE_URL));

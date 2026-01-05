@@ -4,16 +4,15 @@ import hashlib
 from jose import JWTError, jwt
 from datetime import datetime, timedelta
 from typing import Optional
-# thêm để đọc biến môi trường
-import os
+import os  # để đọc biến môi trường
+
 # Password hashing
 # Use pbkdf2_sha256 as the default scheme to avoid bcrypt's 72-byte limit
 # but keep bcrypt in the list to verify existing bcrypt hashes.
 pwd_context = CryptContext(schemes=["pbkdf2_sha256", "bcrypt"], default="pbkdf2_sha256", deprecated="auto")
 
 # JWT Configuration
-#SECRET_KEY = "your-jwt-secret" 
-SECRET_KEY = os.getenv("SECRET_KEY", "your-jwt-secret") 
+SECRET_KEY = os.getenv("JWT_SECRET", "your-jwt-secret") # In production, use a secure environment variable
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60
 
@@ -65,4 +64,9 @@ def encrypt_document_number(document_number: str) -> str:
 
 def decrypt_document_number(encrypted_document_number: str) -> str:
     """Decrypts the document number."""
-    return cipher_suite.decrypt(encrypted_document_number.encode()).decode()
+    if not encrypted_document_number:
+        return ""
+    try:
+        return cipher_suite.decrypt(encrypted_document_number.encode()).decode()
+    except Exception:
+        return "********" # Return placeholder if decryption fails

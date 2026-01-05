@@ -186,46 +186,46 @@ function App() {
         <Route path="/" element={
           <>
             <Hero />
-            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} />
+            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} role={userRole} />
             <WhyChooseUs />
             <Doctors />
-            <Contact />
+            <Contact role={userRole} />
           </>
         } />
         <Route path="/login" element={
           <>
             <Hero />
-            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} />
+            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} role={userRole} />
             <WhyChooseUs />
             <Doctors />
-            <Contact />
+            <Contact role={userRole} />
           </>
         } />
         <Route path="/admin/login" element={
           <>
             <Hero />
-            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} />
+            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} role={userRole} />
             <WhyChooseUs />
             <Doctors />
-            <Contact />
+            <Contact role={userRole} />
           </>
         } />
         <Route path="/register" element={
           <>
             <Hero />
-            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} />
+            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} role={userRole} />
             <WhyChooseUs />
             <Doctors />
-            <Contact />
+            <Contact role={userRole} />
           </>
         } />
         <Route path="/forgot-password" element={
           <>
             <Hero />
-            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} />
+            <QuickAccess isLoggedIn={isLoggedIn} onSignInClick={() => navigate('/login')} role={userRole} />
             <WhyChooseUs />
             <Doctors />
-            <Contact />
+            <Contact role={userRole} />
           </>
         } />
         <Route path="/profile" element={

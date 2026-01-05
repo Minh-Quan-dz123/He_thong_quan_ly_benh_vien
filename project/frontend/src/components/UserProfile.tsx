@@ -61,7 +61,7 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
       };
       fetchUserData();
     }
-  }, [currentUser]);
+  }, [currentUser, role]);
 
   const [tempUser, setTempUser] = useState(user);
 
@@ -75,9 +75,8 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
     setIsEditing(true);
   };
 
-  const handleSave = async () => {
+      const handleSave = async () => {
     try {
-      
       const base = API_BASE_URL;
       const prefix = role === 'doctor' ? 'doctor' : 'patient';
       const path = role === 'doctor' ? 'doctors' : 'patients';
@@ -182,7 +181,9 @@ const UserProfile = ({ role, currentUser, showSuccessToast }: UserProfileProps) 
         <div className="border-t border-gray-200">
           <dl>
             <div className="bg-gray-50 px-4 py-5 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-6">
-              <dt className="text-sm font-medium text-gray-500 self-center">Mã bệnh nhân</dt>
+              <dt className="text-sm font-medium text-gray-500 self-center">
+                {role === 'doctor' ? 'Mã bác sĩ' : 'Mã bệnh nhân'}
+              </dt>
               <dd className="mt-1 text-sm text-gray-900 sm:mt-0 sm:col-span-2">
                 <input
                   type="text"
