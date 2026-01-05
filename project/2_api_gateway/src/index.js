@@ -24,9 +24,9 @@ app.use(express.json());
 // Basic rate limiter (tweak for your needs)
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 3000 // limit each IP to 3000 requests per windowMs
+  max: 1000 // limit each IP to 3000 requests per windowMs
 });
-app.use(limiter);
+//app.use(limiter);
 
 // Health
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
