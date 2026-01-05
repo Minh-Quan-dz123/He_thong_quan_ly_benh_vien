@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { Save, Eye, Edit3, BookOpen, ChevronRight, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Save, Eye, Edit3, BookOpen, ChevronRight, AlertCircle} from 'lucide-react';
 import toast from 'react-hot-toast';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:5080';
@@ -60,7 +60,11 @@ const AdminGuideManagement = () => {
       const token = localStorage.getItem('token');
       const response = await fetch(`${ADMIN_API_BASE_URL}/guides/${selectedSlug}`, {
         method: 'PUT',
-        headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { Authorization: `Bearer ${token}` } : {}),
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        },
+        //headers: Object.assign({ 'Content-Type': 'application/json' }, token ? { Authorization: `Bearer ${token}` } : {}),
         body: JSON.stringify(editData),
       });
 
