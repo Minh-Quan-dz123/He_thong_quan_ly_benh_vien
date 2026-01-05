@@ -16,6 +16,10 @@ const app = express();
 // JWT secret for gateway verification (use env in production)
 const JWT_SECRET = process.env.JWT_SECRET || process.env.JWT_PRIVATE_KEY || 'your-jwt-secret';
 
+//---- 1 thêm strust proxy----
+app.set('trust proxy', 1);
+//---- 1 end --------
+
 // Middlewares
 app.use(morgan('dev'));
 app.use(cors());
@@ -24,7 +28,9 @@ app.use(express.json());
 // Basic rate limiter (tweak for your needs)
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 1000 // limit each IP to 3000 requests per windowMs
+  max: 1000, // limit each IP to 3000 requests per windowMs
+  // 1 thêm: bỏ qua optiones và health check
+  skip: (req) => req.method === 'OPTIONS'
 });
 //app.use(limiter);
 
@@ -54,6 +60,7 @@ function createProxy(target) {
         } catch (e) {}
       }
       // If body has been parsed by express.json(), forward it to the proxied service
+      /* ------2 bỏ đoạn này ----------
       if (req.body && Object.keys(req.body).length) {
         const bodyData = JSON.stringify(req.body);
         // set content-type and content-length (overwrite if necessary)
@@ -65,6 +72,7 @@ function createProxy(target) {
           // ignore write errors
         }
       }
+        ------2 bỏ đoạn này ---------- */
     }
   });
 }
