@@ -12,19 +12,22 @@ const DOCTOR_SERVICE_URL = process.env.DOCTOR_SERVICE_URL || 'http://localhost:8
 const PATIENT_SERVICE_URL = process.env.PATIENT_SERVICE_URL || 'http://localhost:8000';
 
 const app = express();
-
+// app.set('trust proxy', 1);
 // JWT secret for gateway verification (use env in production)
 const JWT_SECRET = process.env.JWT_SECRET || process.env.JWT_PRIVATE_KEY || 'your-jwt-secret';
 
 // Middlewares
+// ghi log http request ra terminal
 app.use(morgan('dev'));
+// cho phép FE gọi đến api gateway mà không bị trình duyệt chặn
 app.use(cors());
+// giúp server hiểu dữ liệu gửi lên dạng json
 app.use(express.json());
 
 // Basic rate limiter (tweak for your needs)
 const limiter = rateLimit({
   windowMs: 60 * 1000, // 1 minute
-  max: 100 // limit each IP to 100 requests per windowMs
+  max: 1000// limit each IP to 100 requests per windowMs
 });
 app.use(limiter);
 

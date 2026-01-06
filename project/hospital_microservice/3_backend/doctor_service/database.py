@@ -1,9 +1,11 @@
 from pymongo import MongoClient
 from pymongo.errors import ConnectionFailure
 import certifi
-
+import os
+from dotenv import load_dotenv
+load_dotenv()
 # Use same URI and DB as patient_service
-MONGO_URI = "mongodb+srv://ngoquan:ngoquan@cluster0.sjfre6b.mongodb.net/"
+MONGO_URI = os.getenv("MONGO_URI", "mongodb+srv://ngoquan:ngoquan@cluster0.sjfre6b.mongodb.net/?retryWrites=true&w=majority&connectTimeoutMS=30000&socketTimeoutMS=30000")
 # Use a separate database for doctors
 DB_NAME = "hospital_doctors_db"
 
